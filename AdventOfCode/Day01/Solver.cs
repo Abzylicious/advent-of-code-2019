@@ -27,6 +27,16 @@ namespace AdventOfCode.Day01
             return result;
         }
 
+        public int PartTwo()
+        {
+            var result = 0;
+            foreach (var mass in Masses)
+            {
+                result += _fuelCalculator.GetTotalFuel(mass);
+            }
+            return result;
+        }
+
         private void ReadInput(string inputPath)
         {
             try
