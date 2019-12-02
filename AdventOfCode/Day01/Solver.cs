@@ -1,41 +1,37 @@
-﻿using System;
+﻿using AdventOfCode.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace AdventOfCode.Day01
 {
-    public class Solver
+    public class Solver : ISolver
     {
         private readonly FuelCalculator _fuelCalculator;
-        public ICollection<int> Masses { get; }
+        private readonly ICollection<int> _masses;
 
-        public Solver(string inputPath)
+        public int Day { get; } = 1;
+        public string Title { get; } = "--- Day 1: The Tyranny of the Rocket Equation ---";
+
+        public Solver()
         {
             _fuelCalculator = new FuelCalculator();
-            Masses = new List<int>();
-            ReadInput(inputPath);
+            _masses = new List<int>();
         }
 
-        public int PartOne()
+        public void Precondition()
         {
-            var result = 0;
-            foreach (var mass in Masses)
+            var filePath = string.Empty;
+            while (!File.Exists(filePath))
             {
-                result += _fuelCalculator.GetFuel(mass);
+                Console.Write("Path to input.txt: ");
+                filePath = Console.ReadLine();
             }
-
-            return result;
+            ReadInput(filePath);
         }
 
-        public int PartTwo()
-        {
-            var result = 0;
-            foreach (var mass in Masses)
-            {
-                result += _fuelCalculator.GetTotalFuel(mass);
-            }
-            return result;
-        }
+        public string GetFirstSolution() => PartOne().ToString();
+        public string GetSecondSolution() => PartTwo().ToString();
 
         private void ReadInput(string inputPath)
         {
@@ -43,13 +39,34 @@ namespace AdventOfCode.Day01
             {
                 foreach (var input in File.ReadAllLines(inputPath))
                 {
-                    Masses.Add(Convert.ToInt32(input));
+                    _masses.Add(Convert.ToInt32(input));
                 }
             }
             catch (Exception)
             {
                 throw new Exception("The input file is not formatted as expected.");
             }
+        }
+
+        private int PartOne()
+        {
+            var result = 0;
+            foreach (var mass in _masses)
+            {
+                result += _fuelCalculator.GetFuel(mass);
+            }
+
+            return result;
+        }
+
+        private int PartTwo()
+        {
+            var result = 0;
+            foreach (var mass in _masses)
+            {
+                result += _fuelCalculator.GetTotalFuel(mass);
+            }
+            return result;
         }
     }
 }
