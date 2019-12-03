@@ -10,7 +10,10 @@ namespace AdventOfCode.Test.Day02
     {
         private readonly IntcodeParser _intcodeParser = new IntcodeParser();
 
-        [Test, Description("1,0,0,0,99 becomes 2,0,0,0,99 (1 + 1 = 2).")]
+        /// <summary>
+        /// 1,0,0,0,99 becomes 2,0,0,0,99 (1 + 1 = 2).
+        /// </summary>
+        [Test]
         public void ExampleOne()
         {
             var input = new List<int>() { 1, 0, 0, 0, 99 };
@@ -18,7 +21,10 @@ namespace AdventOfCode.Test.Day02
             actual.Should().BeEquivalentTo(new List<int>() { 2, 0, 0, 0, 99 });
         }
 
-        [Test, Description("2,3,0,3,99 becomes 2,3,0,6,99 (3 * 2 = 6).")]
+        /// <summary>
+        /// 2,3,0,3,99 becomes 2,3,0,6,99 (3 * 2 = 6).
+        /// </summary>
+        [Test]
         public void ExampleTwo()
         {
             var input = new List<int>() { 2, 3, 0, 3, 99 };
@@ -26,7 +32,10 @@ namespace AdventOfCode.Test.Day02
             actual.Should().BeEquivalentTo(new List<int>() { 2, 3, 0, 6, 99 });
         }
 
-        [Test, Description("2,4,4,5,99,0 becomes 2,4,4,5,99,9801 (99 * 99 = 9801).")]
+        /// <summary>
+        /// 2,4,4,5,99,0 becomes 2,4,4,5,99,9801 (99 * 99 = 9801).
+        /// </summary>
+        [Test]
         public void ExampleThree()
         {
             var input = new List<int>() { 2, 4, 4, 5, 99, 0 };
@@ -34,7 +43,10 @@ namespace AdventOfCode.Test.Day02
             actual.Should().BeEquivalentTo(new List<int>() { 2, 4, 4, 5, 99, 9801 });
         }
 
-        [Test, Description("1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.")]
+        /// <summary>
+        /// 1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
+        /// </summary>
+        [Test]
         public void ExampleFour()
         {
             var input = new List<int>() { 1, 1, 1, 4, 99, 5, 6, 0, 99 };
