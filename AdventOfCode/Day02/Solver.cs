@@ -10,7 +10,6 @@ namespace AdventOfCode.Day02
     {
         private readonly IntcodeParser _intcodeParser;
         private readonly List<int> _intcode;
-        private string _filePath = string.Empty;
 
         public int Day { get; } = 2;
         public string Title { get; } = "--- Day 2: 1202 Program Alarm ---";
@@ -23,23 +22,23 @@ namespace AdventOfCode.Day02
 
         public void Precondition()
         {
-            while (!File.Exists(_filePath))
+            var filePath = string.Empty;
+            while (!File.Exists(filePath))
             {
                 Console.Write("Path to input.txt: ");
-                _filePath = Console.ReadLine();
+                filePath = Console.ReadLine();
             }
-            ReadInput();
+            ReadInput(filePath);
         }
 
         public string GetFirstSolution() => PartOne().ToString();
         public string GetSecondSolution() => PartTwo().ToString();
 
-        private void ReadInput()
+        private void ReadInput(string inputPath)
         {
-            _intcode.Clear();
             try
             {
-                foreach (var code in File.ReadAllText(_filePath).Split(','))
+                foreach (var code in File.ReadAllText(inputPath).Split(','))
                 {
                     _intcode.Add(Convert.ToInt32(code));
                 }
