@@ -31,7 +31,7 @@ namespace AdventOfCode.Day02
             ReadInput(filePath);
         }
 
-        public string GetFirstSolution() => PartOne().ToString();
+        public string GetFirstSolution() => _intcodeParser.Parse(_intcode, 12, 2).ElementAt(0).ToString();
         public string GetSecondSolution() => PartTwo().ToString();
 
         private void ReadInput(string inputPath)
@@ -47,12 +47,6 @@ namespace AdventOfCode.Day02
             {
                 throw new Exception("The input file is not formatted as expected.");
             }
-        }
-
-        private int PartOne()
-        {
-            var result = _intcodeParser.Parse(_intcode, 12, 2);
-            return result[0];
         }
 
         private int PartTwo()

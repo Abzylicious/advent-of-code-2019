@@ -27,8 +27,8 @@ namespace AdventOfCode.Day03
             ReadInput(filePath);
         }
 
-        public string GetFirstSolution() => PartOne().ToString();
-        public string GetSecondSolution() => PartTwo().ToString();
+        public string GetFirstSolution() => _grid.GetClosestIntersection().ToString();
+        public string GetSecondSolution() => _grid.GetSmallestSteps().ToString();
 
         private void ReadInput(string inputPath)
         {
@@ -43,8 +43,5 @@ namespace AdventOfCode.Day03
                 throw new Exception("The input file is not formatted as expected.");
             }
         }
-
-        private int PartOne() => _grid.GetClosestIntersection();
-        private int PartTwo() => _grid.GetSmallestSteps();
     }
 }
