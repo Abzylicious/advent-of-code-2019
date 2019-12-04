@@ -15,7 +15,7 @@ namespace AdventOfCode.Test.Day04
         [Test]
         public void ExampleOne()
         {
-            var actual = _passwordCombiner.IsValid(112233, null);
+            var actual = _passwordCombiner.IsValid(112233, new NoDecreaseRule(), new AdjacentDigitsMatchOnlyOnceRule());
             actual.Should().BeTrue();
         }
 
@@ -25,7 +25,7 @@ namespace AdventOfCode.Test.Day04
         [Test]
         public void ExampleTwo()
         {
-            var actual = _passwordCombiner.IsValid(123444, null);
+            var actual = _passwordCombiner.IsValid(123444, new NoDecreaseRule(), new AdjacentDigitsMatchOnlyOnceRule());
             actual.Should().BeFalse();
         }
 
@@ -35,7 +35,7 @@ namespace AdventOfCode.Test.Day04
         [Test]
         public void ExampleThree()
         {
-            var actual = _passwordCombiner.IsValid(111122, null);
+            var actual = _passwordCombiner.IsValid(111122, new NoDecreaseRule(), new AdjacentDigitsMatchOnlyOnceRule());
             actual.Should().BeTrue();
         }
     }
