@@ -5,6 +5,18 @@ namespace AdventOfCode.Day04
 {
     public class PasswordCombiner
     {
+        public int GetValidCombinations(int start, int end, params IPasswordRule[] rulesets)
+        {
+            var validCombinations = 0;
+            for (int i = start; i <= end; i++)
+            {
+                if (IsValid(i, rulesets))
+                {
+                    validCombinations++;
+                }
+            }
+            return validCombinations;
+        }
 
         public bool IsValid(int number, params IPasswordRule[] ruleset) => IsValid(GetDigits(number), ruleset);
 
