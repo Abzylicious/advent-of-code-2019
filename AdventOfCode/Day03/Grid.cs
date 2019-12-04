@@ -24,6 +24,25 @@ namespace AdventOfCode.Day03
             return distances.Min();
         }
 
+        public int GetSmallestSteps()
+        {
+            var intersections = GetIntersections();
+            var steps = new List<int>();
+
+            foreach (var intersection in intersections)
+            {
+                steps.Add(CalculateSteps(intersection));
+            }
+            return steps.Min();
+        }
+
         private int CalculateManhattanDistance(Point point) => Math.Abs(point.X) + Math.Abs(point.Y);
+
+        private int CalculateSteps(Point destination)
+        {
+            var stepsA = WireA.ConnectedPoints.IndexOf(destination) + 1;
+            var stepsB = WireB.ConnectedPoints.IndexOf(destination) + 1;
+            return stepsA + stepsB;
+        }
     }
 }
