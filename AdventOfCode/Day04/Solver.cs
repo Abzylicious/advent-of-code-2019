@@ -23,8 +23,11 @@ namespace AdventOfCode.Day04
             _end = ReadInteger("end");
         }
 
-        public string GetFirstSolution() => _passwordCombiner.GetValidCombinations(_start, _end, new NoDecreaseRule(), new AdjacentDigitsMatchOnceRule()).ToString();
-        public string GetSecondSolution() => "No solution for part 2 yet :c";
+        public string GetFirstSolution() => _passwordCombiner.GetValidCombinations(_start, _end,
+            new NoDecreaseRule(), new AdjacentDigitsMatchOnceRule()).ToString();
+
+        public string GetSecondSolution() => _passwordCombiner.GetValidCombinations(_start, _end,
+            new NoDecreaseRule(), new AdjacentDigitsMatchOnlyOnceRule()).ToString();
 
         private int ReadInteger(string descriptor)
         {
