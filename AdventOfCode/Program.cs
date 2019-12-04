@@ -9,18 +9,18 @@ namespace AdventOfCode
         {
             var solveService = new SolveService();
             Console.WriteLine("Advent of Code 2019");
-            Console.WriteLine("\nEnter a day to view its solution.");
 
             do
             {
                 var day = ReadDay();
                 solveService.GetSolution(day);
                 Console.WriteLine("\nDo you want to check upon other days? Press any key to continue, press 'ESCAPE' to exit.");
-            } while (Console.ReadKey().Key != ConsoleKey.Escape);
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
 
         private static int ReadDay()
         {
+            Console.Write("\nEnter a day to view its solution: ");
             var daySelection = ReadInteger();
             if (!IsCalendarDay(daySelection))
             {
@@ -36,7 +36,7 @@ namespace AdventOfCode
             int result;
             while (!int.TryParse(Console.ReadLine(), out result))
             {
-                Console.WriteLine("The entered value is not a number.");
+                Console.Write("The entered value is not a number: ");
             }
             return result;
         }
