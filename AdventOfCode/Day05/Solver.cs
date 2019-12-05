@@ -30,13 +30,10 @@ namespace AdventOfCode.Day05
                 filePath = Console.ReadLine();
             }
             ReadInput(filePath);
-
-            Console.Write("Input value: ");
-            _input = ReadInteger();
         }
 
-        public string GetFirstSolution() => _intcodeParser.Parse(_intcode, _input).ToString();
-        public string GetSecondSolution() => "No solution for part 2 yet :c";
+        public string GetFirstSolution() => GetSolution();
+        public string GetSecondSolution() => GetSolution();
 
         private void ReadInput(string inputPath)
         {
@@ -61,6 +58,13 @@ namespace AdventOfCode.Day05
                 Console.Write("The entered value is not a number: ");
             }
             return result;
+        }
+
+        private string GetSolution()
+        {
+            Console.Write("Enter your input value: ");
+            _input = ReadInteger();
+            return _intcodeParser.Parse(_intcode, _input).ToString();
         }
     }
 }
