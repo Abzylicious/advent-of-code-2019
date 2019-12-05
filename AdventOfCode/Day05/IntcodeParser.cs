@@ -62,7 +62,7 @@ namespace AdventOfCode.Day05
             var opcode = GetOpcode(_memory[instructionPointer]);
             return new Instruction()
             {
-                Opcode = GetOpcode(opcode),
+                Opcode = opcode,
                 Parameters = GetParameters(opcode, instructionPointer)
             };
         }
@@ -71,15 +71,15 @@ namespace AdventOfCode.Day05
 
         private List<int> GetParameters(int opcode, int instructionPointer)
         {
-            var modes = GetModes(_memory[instructionPointer]);
+            var instructionValue = _memory[instructionPointer];
             var parameters = new List<int>();
 
             switch (opcode)
             {
                 case 1:
                 case 2:
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, modes.FirstImmediateMode));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, modes.SecondImmediateMode));
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
                     parameters.Add(GetTargetIndexValue(instructionPointer + 3, true));
                     break;
                 case 3:
@@ -93,21 +93,11 @@ namespace AdventOfCode.Day05
             return parameters;
         }
 
-        private (bool FirstImmediateMode, bool SecondImmediateMode, bool ThirdImmediateMode) GetModes(int instructionValue)
+        private bool GetMode(int instructionValue, int parameterNumber)
         {
             var digits = GetDigits(instructionValue);
-            if (digits.Count <= 2)
-            {
-                return (false, false, false);
-            }
-
-            return digits.Count switch
-            {
-                3 => (Convert.ToBoolean(digits[0]), false, false),
-                4 => (Convert.ToBoolean(digits[1]), Convert.ToBoolean(digits[0]), false),
-                5 => (Convert.ToBoolean(digits[2]), Convert.ToBoolean(digits[1]), Convert.ToBoolean(digits[0])),
-                _ => throw new Exception("The opcode instruction is too large.")
-            };
+            var index = digits.Count - 2 - parameterNumber;
+            return index >= 0 && Convert.ToBoolean(digits[index]);
         }
 
         private int GetTargetIndexValue(int targetIndex, bool immediateMode) => immediateMode
