@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AdventOfCode.Day05
 {
@@ -31,29 +30,39 @@ namespace AdventOfCode.Day05
             while(_memory[instructionPointer] != 99)
             {
                 var instruction = GetInstruction(instructionPointer);
-                ExecuteInstruction(instruction);
-                instructionPointer += instruction.ParameterCount();
+                instructionPointer = ExecuteInstruction(instruction, instructionPointer);
             }
         }
 
-        private void ExecuteInstruction(Instruction instruction)
+        private int ExecuteInstruction(Instruction instruction, int instructionPointer)
         {
-            switch(instruction.Opcode)
+            var nextInstructionPointer = instructionPointer += instruction.ParameterCount();
+            switch (instruction.Opcode)
             {
                 case 1:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] + instruction.Parameters[1];
-                    break;
+                    return nextInstructionPointer;
                 case 2:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] * instruction.Parameters[1];
-                    break;
+                    return nextInstructionPointer;
                 case 3:
                     _memory[instruction.Parameters[0]] = _input;
-                    break;
+                    return nextInstructionPointer;
                 case 4:
                     _output = _memory[instruction.Parameters[0]];
-                    break;
+                    return nextInstructionPointer;
+                case 5:
+                    return instruction.Parameters[0] != 0 ? instruction.Parameters[1] : nextInstructionPointer;
+                case 6:
+                    return instruction.Parameters[0] == 0 ? instruction.Parameters[1] : nextInstructionPointer;
+                case 7:
+                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] < instruction.Parameters[1] ? 1 : 0;
+                    return nextInstructionPointer;
+                case 8:
+                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] == instruction.Parameters[1] ? 1 : 0;
+                    return nextInstructionPointer;
                 default:
-                    throw new Exception($"Execution of opcode {instruction.Opcode} failed.");
+                    throw new Exception($"Opcode {instruction.Opcode} failed to execute.");
             }
         }
 
@@ -76,15 +85,22 @@ namespace AdventOfCode.Day05
 
             switch (opcode)
             {
-                case 1:
-                case 2:
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 3, true));
-                    break;
                 case 3:
                 case 4:
                     parameters.Add(GetTargetIndexValue(instructionPointer + 1, true));
+                    break;
+                case 5:
+                case 6:
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
+                    break;
+                case 1:
+                case 2:
+                case 7:
+                case 8:
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
+                    parameters.Add(GetTargetIndexValue(instructionPointer + 3, true));
                     break;
                 default:
                     throw new Exception("Opcode instruction not found.");
