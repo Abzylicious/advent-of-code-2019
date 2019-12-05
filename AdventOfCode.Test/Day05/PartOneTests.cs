@@ -11,6 +11,17 @@ namespace AdventOfCode.Test.Day05
         private readonly IntcodeParser _intcodeParser = new IntcodeParser();
 
         /// <summary>
+        /// The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
+        /// </summary>
+        [Test]
+        public void ExampleOne()
+        {
+            var input = new List<int>() { 3, 0, 4, 0, 99 };
+            var actual = _intcodeParser.Parse(input, 42);
+            actual.Should().Be(42);
+        }
+
+        /// <summary>
         /// For example, consider the program 1002,4,3,4,33.
         /// The first instruction, 1002,4,3,4, is a multiply instruction - [...]
         /// This instruction multiplies its first two parameters. The first parameter,
@@ -20,7 +31,7 @@ namespace AdventOfCode.Test.Day05
         /// 4 in position mode, which also works like it did before - 99 is written to address 4.
         /// </summary>
         [Test]
-        public void ExampleOne()
+        public void ExampleTwo()
         {
             var input = new List<int>() { 1002, 4, 3, 4, 33 };
             var actual = _intcodeParser.Parse(input);
@@ -31,7 +42,7 @@ namespace AdventOfCode.Test.Day05
         /// Integers can be negative: 1101,100,-1,4,0 is a valid program (find 100 + -1, store the result in position 4)
         /// </summary>
         [Test]
-        public void ExampleTwo()
+        public void ExampleThree()
         {
             var input = new List<int>() { 1101, 100, -1, 4, 0 };
             var actual = _intcodeParser.Parse(input);
