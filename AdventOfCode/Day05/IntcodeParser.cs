@@ -49,7 +49,7 @@ namespace AdventOfCode.Day05
                     _memory[instruction.Parameters[0]] = _input;
                     return nextInstructionPointer;
                 case Opcode.OUTPUT:
-                    _output = _memory[instruction.Parameters[0]];
+                    _output = instruction.Parameters[0];
                     return nextInstructionPointer;
                 case Opcode.JUMP_IF_TRUE:
                     return instruction.Parameters[0] != 0 ? instruction.Parameters[1] : nextInstructionPointer;
@@ -86,8 +86,10 @@ namespace AdventOfCode.Day05
             switch (opcode)
             {
                 case Opcode.WRITE:
-                case Opcode.OUTPUT:
                     parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
+                    break;
+                case Opcode.OUTPUT:
+                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
                     break;
                 case Opcode.JUMP_IF_TRUE:
                 case Opcode.JUMP_IF_FALSE:
