@@ -118,8 +118,15 @@ namespace AdventOfCode.Day05
 
         private ParameterMode GetMode(int opcode, int parameterNumber)
         {
-            var fullCode = string.Format("{0:00000}", opcode);
-            return (ParameterMode)Enum.Parse(typeof(ParameterMode), fullCode[3 - parameterNumber].ToString());
+            try
+            {
+                var fullCode = string.Format("{0:00000}", opcode);
+                return (ParameterMode)Enum.Parse(typeof(ParameterMode), fullCode[3 - parameterNumber].ToString());
+            }
+            catch
+            {
+                throw new Exception("Number of parameters exceeded.");
+            }
         }
     }
 }
