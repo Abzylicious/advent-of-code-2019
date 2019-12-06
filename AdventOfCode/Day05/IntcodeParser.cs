@@ -27,7 +27,7 @@ namespace AdventOfCode.Day05
         private void Run()
         {
             var instructionPointer = 0;
-            while(_memory[instructionPointer] != 99)
+            while((Opcode)_memory[instructionPointer] != Opcode.END)
             {
                 var instruction = GetInstruction(instructionPointer);
                 instructionPointer = ExecuteInstruction(instruction, instructionPointer);
@@ -39,26 +39,26 @@ namespace AdventOfCode.Day05
             var nextInstructionPointer = instructionPointer += instruction.ParameterCount();
             switch (instruction.Opcode)
             {
-                case 1:
+                case Opcode.ADD:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] + instruction.Parameters[1];
                     return nextInstructionPointer;
-                case 2:
+                case Opcode.MULTIPLY:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] * instruction.Parameters[1];
                     return nextInstructionPointer;
-                case 3:
+                case Opcode.WRITE:
                     _memory[instruction.Parameters[0]] = _input;
                     return nextInstructionPointer;
-                case 4:
+                case Opcode.OUTPUT:
                     _output = _memory[instruction.Parameters[0]];
                     return nextInstructionPointer;
-                case 5:
+                case Opcode.JUMP_IF_TRUE:
                     return instruction.Parameters[0] != 0 ? instruction.Parameters[1] : nextInstructionPointer;
-                case 6:
+                case Opcode.JUMP_IF_FALSE:
                     return instruction.Parameters[0] == 0 ? instruction.Parameters[1] : nextInstructionPointer;
-                case 7:
+                case Opcode.LESS_THAN:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] < instruction.Parameters[1] ? 1 : 0;
                     return nextInstructionPointer;
-                case 8:
+                case Opcode.EQUALS:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] == instruction.Parameters[1] ? 1 : 0;
                     return nextInstructionPointer;
                 default:
@@ -68,7 +68,7 @@ namespace AdventOfCode.Day05
 
         private Instruction GetInstruction(int instructionPointer)
         {
-            var opcode = GetOpcode(_memory[instructionPointer]);
+            var opcode = (Opcode)GetOpcodeValue(instructionPointer);
             return new Instruction()
             {
                 Opcode = opcode,
@@ -76,31 +76,31 @@ namespace AdventOfCode.Day05
             };
         }
 
-        private int GetOpcode(int instructionValue) => instructionValue % 100;
+        private int GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
 
-        private List<int> GetParameters(int opcode, int instructionPointer)
+        private List<int> GetParameters(Opcode opcode, int instructionPointer)
         {
-            var instructionValue = _memory[instructionPointer];
+            var opcodeInstruction = _memory[instructionPointer];
             var parameters = new List<int>();
 
             switch (opcode)
             {
-                case 3:
-                case 4:
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, true));
+                case Opcode.WRITE:
+                case Opcode.OUTPUT:
+                    parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
                     break;
-                case 5:
-                case 6:
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
+                case Opcode.JUMP_IF_TRUE:
+                case Opcode.JUMP_IF_FALSE:
+                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
+                    parameters.Add(GetValue(instructionPointer + 2, GetMode(opcodeInstruction, 2)));
                     break;
-                case 1:
-                case 2:
-                case 7:
-                case 8:
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 1, GetMode(instructionValue, 1)));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 2, GetMode(instructionValue, 2)));
-                    parameters.Add(GetTargetIndexValue(instructionPointer + 3, true));
+                case Opcode.ADD:
+                case Opcode.MULTIPLY:
+                case Opcode.LESS_THAN:
+                case Opcode.EQUALS:
+                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
+                    parameters.Add(GetValue(instructionPointer + 2, GetMode(opcodeInstruction, 2)));
+                    parameters.Add(GetValue(instructionPointer + 3, ParameterMode.IMMEDIATE));
                     break;
                 default:
                     throw new Exception("Opcode instruction not found.");
@@ -109,28 +109,17 @@ namespace AdventOfCode.Day05
             return parameters;
         }
 
-        private bool GetMode(int instructionValue, int parameterNumber)
+        private int GetValue(int index, ParameterMode mode) => mode switch
         {
-            var digits = GetDigits(instructionValue);
-            var index = digits.Count - 2 - parameterNumber;
-            return index >= 0 && Convert.ToBoolean(digits[index]);
-        }
+            ParameterMode.POSITIONAL => _memory[_memory[index]],
+            ParameterMode.IMMEDIATE => _memory[index],
+            _ => throw new Exception("Unknown parameter mode detected.")
+        };
 
-        private int GetTargetIndexValue(int targetIndex, bool immediateMode) => immediateMode
-            ? _memory[targetIndex]
-            : _memory[_memory[targetIndex]];
-
-        private List<int> GetDigits(int number)
+        private ParameterMode GetMode(int opcode, int parameterNumber)
         {
-            var digits = new List<int>();
-            while (number > 0)
-            {
-                digits.Add(number % 10);
-                number /= 10;
-            }
-
-            digits.Reverse();
-            return digits;
+            var fullCode = string.Format("{0:00000}", opcode);
+            return (ParameterMode)Enum.Parse(typeof(ParameterMode), fullCode[3 - parameterNumber].ToString());
         }
     }
 }

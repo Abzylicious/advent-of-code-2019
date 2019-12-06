@@ -4,7 +4,7 @@ namespace AdventOfCode.Day05
 {
     public class Instruction
     {
-        public int Opcode { get; set; }
+        public Opcode Opcode { get; set; }
         public List<int> Parameters { get; set; }
 
         public Instruction()
