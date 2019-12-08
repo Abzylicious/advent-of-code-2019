@@ -23,7 +23,7 @@ namespace AdventOfCode.Day08
         }
 
         public string GetFirstSolution() => _imageDecoder.GetChecksum(_spaceImage).ToString();
-        public string GetSecondSolution() => "No solution for part 2 yet :c";
+        public string GetSecondSolution() => $"\n{_imageDecoder.DecodeImageToString(_spaceImage)}";
 
         private string GetFilePath()
         {
