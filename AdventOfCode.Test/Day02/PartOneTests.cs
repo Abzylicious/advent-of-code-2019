@@ -8,7 +8,7 @@ namespace AdventOfCode.Test.Day02
     [TestFixture]
     public class PartOneTests
     {
-        private readonly IntcodeParser _intcodeParser = new IntcodeParser();
+        private readonly IntcodeComputer _intcodeParser = new IntcodeComputer();
 
         /// <summary>
         /// 1,0,0,0,99 becomes 2,0,0,0,99 (1 + 1 = 2).

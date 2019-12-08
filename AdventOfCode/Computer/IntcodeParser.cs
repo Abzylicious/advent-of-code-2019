@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AdventOfCode.Day05
+namespace AdventOfCode.Computer
 {
     public class IntcodeParser
     {
-        private int[] _memory;
-        private int _input;
-        private int _output;
+        protected int[] _memory;
 
         public int[] Parse(List<int> intcode)
         {
@@ -16,27 +14,19 @@ namespace AdventOfCode.Day05
             return _memory;
         }
 
-        public int Parse(List<int> intcode, int input)
-        {
-            _memory = intcode.ToArray();
-            _input = input;
-            Run();
-            return _output;
-        }
-
-        private void Run()
+        protected virtual void Run()
         {
             var instructionPointer = 0;
-            while((Opcode)_memory[instructionPointer] != Opcode.END)
+            while ((Opcode)_memory[instructionPointer] != Opcode.END)
             {
                 var instruction = GetInstruction(instructionPointer);
                 instructionPointer = ExecuteInstruction(instruction, instructionPointer);
             }
         }
 
-        private int ExecuteInstruction(Instruction instruction, int instructionPointer)
+        protected virtual int ExecuteInstruction(Instruction instruction, int instructionPointer)
         {
-            var nextInstructionPointer = instructionPointer += instruction.ParameterCount();
+            var nextInstructionPointer = instructionPointer + instruction.ParameterCount();
             switch (instruction.Opcode)
             {
                 case Opcode.ADD:
@@ -44,12 +34,6 @@ namespace AdventOfCode.Day05
                     return nextInstructionPointer;
                 case Opcode.MULTIPLY:
                     _memory[instruction.Parameters[2]] = instruction.Parameters[0] * instruction.Parameters[1];
-                    return nextInstructionPointer;
-                case Opcode.WRITE:
-                    _memory[instruction.Parameters[0]] = _input;
-                    return nextInstructionPointer;
-                case Opcode.OUTPUT:
-                    _output = instruction.Parameters[0];
                     return nextInstructionPointer;
                 case Opcode.JUMP_IF_TRUE:
                     return instruction.Parameters[0] != 0 ? instruction.Parameters[1] : nextInstructionPointer;
@@ -66,31 +50,13 @@ namespace AdventOfCode.Day05
             }
         }
 
-        private Instruction GetInstruction(int instructionPointer)
-        {
-            var opcode = (Opcode)GetOpcodeValue(instructionPointer);
-            return new Instruction()
-            {
-                Opcode = opcode,
-                Parameters = GetParameters(opcode, instructionPointer)
-            };
-        }
-
-        private int GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
-
-        private List<int> GetParameters(Opcode opcode, int instructionPointer)
+        protected virtual List<int> GetParameters(Opcode opcode, int instructionPointer)
         {
             var opcodeInstruction = _memory[instructionPointer];
             var parameters = new List<int>();
 
             switch (opcode)
             {
-                case Opcode.WRITE:
-                    parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
-                    break;
-                case Opcode.OUTPUT:
-                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
-                    break;
                 case Opcode.JUMP_IF_TRUE:
                 case Opcode.JUMP_IF_FALSE:
                     parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
@@ -111,14 +77,16 @@ namespace AdventOfCode.Day05
             return parameters;
         }
 
-        private int GetValue(int index, ParameterMode mode) => mode switch
+        protected int GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
+
+        protected int GetValue(int index, ParameterMode mode) => mode switch
         {
             ParameterMode.POSITIONAL => _memory[_memory[index]],
             ParameterMode.IMMEDIATE => _memory[index],
             _ => throw new Exception("Unknown parameter mode detected.")
         };
 
-        private ParameterMode GetMode(int opcode, int parameterNumber)
+        protected ParameterMode GetMode(int opcode, int parameterNumber)
         {
             try
             {
@@ -129,6 +97,16 @@ namespace AdventOfCode.Day05
             {
                 throw new Exception("Number of parameters exceeded.");
             }
+        }
+
+        protected Instruction GetInstruction(int instructionPointer)
+        {
+            var opcode = (Opcode)GetOpcodeValue(instructionPointer);
+            return new Instruction()
+            {
+                Opcode = opcode,
+                Parameters = GetParameters(opcode, instructionPointer)
+            };
         }
     }
 }

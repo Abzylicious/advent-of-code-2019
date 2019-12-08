@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode.Day05
+﻿namespace AdventOfCode.Computer
 {
     public enum ParameterMode
     {

@@ -8,7 +8,7 @@ namespace AdventOfCode.Day02
 {
     public class Solver : ISolver
     {
-        private readonly IntcodeParser _intcodeParser;
+        private readonly IntcodeComputer _intcodeParser;
         private readonly List<int> _intcode;
 
         public int Day { get; } = 2;
@@ -16,7 +16,7 @@ namespace AdventOfCode.Day02
 
         public Solver()
         {
-            _intcodeParser = new IntcodeParser();
+            _intcodeParser = new IntcodeComputer();
             _intcode = new List<int>();
         }
 

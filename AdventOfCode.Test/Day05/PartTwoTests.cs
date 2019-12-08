@@ -8,7 +8,7 @@ namespace AdventOfCode.Test.Day05
     [TestFixture]
     public class PartTwoTests
     {
-        private readonly IntcodeParser _intcodeParser = new IntcodeParser();
+        private readonly TEST _intcodeParser = new TEST();
 
         /// <summary>
         /// 3,9,8,9,10,9,4,9,99,-1,8 - Using position mode, consider whether the input

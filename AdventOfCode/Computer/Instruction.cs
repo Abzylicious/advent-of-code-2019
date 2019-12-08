@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AdventOfCode.Day05
+namespace AdventOfCode.Computer
 {
     public class Instruction
     {

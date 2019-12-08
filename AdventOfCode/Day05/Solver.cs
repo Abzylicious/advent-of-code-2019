@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace AdventOfCode.Day05
 {
     public class Solver : ISolver
     {
-        private readonly IntcodeParser _intcodeParser;
+        private readonly TEST _intcodeParser;
         private readonly List<int> _intcode;
         private int _input;
 
@@ -17,7 +16,7 @@ namespace AdventOfCode.Day05
 
         public Solver()
         {
-            _intcodeParser = new IntcodeParser();
+            _intcodeParser = new TEST();
             _intcode = new List<int>();
         }
 

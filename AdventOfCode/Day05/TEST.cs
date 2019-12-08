@@ -1,0 +1,55 @@
+﻿using System.Collections.Generic;
+using AdventOfCode.Computer;
+
+namespace AdventOfCode.Day05
+{
+    public class TEST : IntcodeParser
+    {
+        private int _input;
+        private int _output;
+
+        public int Parse(List<int> intcode, int input)
+        {
+            _memory = intcode.ToArray();
+            _input = input;
+            Run();
+            return _output;
+        }
+
+        protected override int ExecuteInstruction(Instruction instruction, int instructionPointer)
+        {
+            var nextInstructionPointer = instructionPointer + instruction.ParameterCount();
+            switch (instruction.Opcode)
+            {
+                case Opcode.WRITE:
+                    _memory[instruction.Parameters[0]] = _input;
+                    return nextInstructionPointer;
+                case Opcode.OUTPUT:
+                    _output = instruction.Parameters[0];
+                    return nextInstructionPointer;
+      
+            }
+            return base.ExecuteInstruction(instruction, instructionPointer);
+        }
+
+        protected override List<int> GetParameters(Opcode opcode, int instructionPointer)
+        {
+            var opcodeInstruction = _memory[instructionPointer];
+            var parameters = new List<int>();
+
+            switch (opcode)
+            {
+                case Opcode.WRITE:
+                    parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
+                    break;
+                case Opcode.OUTPUT:
+                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
+                    break;
+                default:
+                    return base.GetParameters(opcode, instructionPointer);
+            }
+
+            return parameters;
+        }
+    }
+}

@@ -8,7 +8,7 @@ namespace AdventOfCode.Test.Day05
     [TestFixture]
     public class PartOneTests
     {
-        private readonly IntcodeParser _intcodeParser = new IntcodeParser();
+        private readonly TEST _intcodeParser = new TEST();
 
         /// <summary>
         /// The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
