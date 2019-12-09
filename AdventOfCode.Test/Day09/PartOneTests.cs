@@ -66,5 +66,71 @@ namespace AdventOfCode.Test.Day09
             var actual = _boost.Parse(intcode, 42);
             actual[0].Should().Be(42);
         }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditOne()
+        {
+            var intcode = new List<long> { 109, -1, 4, 1, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(-1);
+        }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditTwo()
+        {
+            var intcode = new List<long> { 109, -1, 104, 1, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(1);
+        }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditThree()
+        {
+            var intcode = new List<long> { 109, -1, 204, 1, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(109);
+        }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditFour()
+        {
+            var intcode = new List<long> { 109, 1, 9, 2, 204, -6, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(204);
+        }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditFive()
+        {
+            var intcode = new List<long> { 109, 1, 109, 9, 204, -6, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(204);
+        }
+
+        /// <summary>
+        /// Additional test case from https://www.reddit.com/r/adventofcode/comments/e8aw9j/2019_day_9_part_1_how_to_fix_203_error/
+        /// </summary>
+        [Test]
+        public void RedditSix()
+        {
+            var intcode = new List<long> { 109, 1, 209, -1, 204, -106, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(204);
+        }
     }
 }

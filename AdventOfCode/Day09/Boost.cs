@@ -7,12 +7,13 @@ namespace AdventOfCode.Day09
     public class Boost : IntcodeParser
     {
         private int _relativeBase;
-        private int _input;
+        private List<int> _inputs = new List<int>();
         private readonly List<long> _output = new List<long>();
 
         public List<long> Parse(List<long> intcode, int input)
         {
-            _input = input;
+            _inputs.Clear();
+            _inputs.Add(input);
             return Parse(intcode);
         }
 
@@ -31,7 +32,8 @@ namespace AdventOfCode.Day09
             switch (instruction.Opcode)
             {
                 case Opcode.WRITE:
-                    SetMemoryAt((int)instruction.Parameters[0], _input);
+                    SetMemoryAt((int)instruction.Parameters[0], _inputs[0]);
+                    _inputs.RemoveAt(0);
                     return nextInstructionPointer;
                 case Opcode.OUTPUT:
                     _output.Add(instruction.Parameters[0]);
@@ -52,10 +54,6 @@ namespace AdventOfCode.Day09
             switch (opcode)
             {
                 case Opcode.WRITE:
-                    var mode = GetMode(opcodeInstruction, 1);
-                    parameters.Add(GetValue(instructionPointer + 1,
-                        mode == ParameterMode.RELATIVE ? ParameterMode.RELATIVE : ParameterMode.IMMEDIATE));
-                    break;
                 case Opcode.OUTPUT:
                 case Opcode.MODIFY_OFFSET:
                     parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
