@@ -10,7 +10,7 @@ namespace AdventOfCode.Day05
 
         public int Parse(List<int> intcode, int input)
         {
-            _memory = intcode.ToArray();
+            _memory = intcode.ConvertAll(n => (long)n);
             _input = input;
             Run();
             return _output;
@@ -22,20 +22,20 @@ namespace AdventOfCode.Day05
             switch (instruction.Opcode)
             {
                 case Opcode.WRITE:
-                    _memory[instruction.Parameters[0]] = _input;
+                    _memory[(int)instruction.Parameters[0]] = _input;
                     return nextInstructionPointer;
                 case Opcode.OUTPUT:
-                    _output = instruction.Parameters[0];
+                    _output = (int)instruction.Parameters[0];
                     return nextInstructionPointer;
       
             }
             return base.ExecuteInstruction(instruction, instructionPointer);
         }
 
-        protected override List<int> GetParameters(Opcode opcode, int instructionPointer)
+        protected override List<long> GetParameters(Opcode opcode, int instructionPointer)
         {
             var opcodeInstruction = _memory[instructionPointer];
-            var parameters = new List<int>();
+            var parameters = new List<long>();
 
             switch (opcode)
             {

@@ -19,7 +19,7 @@ namespace AdventOfCode.Day07
 
         public int GetThrusterSignal(List<int> intcode, int signal)
         {
-            _memory = intcode.ToArray();
+            _memory = intcode.ConvertAll(n => (long)n);
             _inputs = new List<int>() { _phase, signal };
             _instructionPointer = 0;
             Run();
@@ -31,7 +31,7 @@ namespace AdventOfCode.Day07
             IsPaused = false;
             if (!IsRunning)
             {
-                _memory = initialIntcode.ToArray();
+                _memory = initialIntcode.ConvertAll(n => (long)n);
                 _inputs = new List<int>() { _phase, signal };
                 _instructionPointer = 0;
                 IsRunning = true;
@@ -62,21 +62,21 @@ namespace AdventOfCode.Day07
             switch (instruction.Opcode)
             {
                 case Opcode.WRITE:
-                    _memory[instruction.Parameters[0]] = _inputs[0];
+                    _memory[(int)instruction.Parameters[0]] = _inputs[0];
                     _inputs.RemoveAt(0);
                     return nextInstructionPointer;
                 case Opcode.OUTPUT:
-                    _output = instruction.Parameters[0];
+                    _output = (int)instruction.Parameters[0];
                     IsPaused = true;
                     return nextInstructionPointer;
             }
             return base.ExecuteInstruction(instruction, instructionPointer);
         }
 
-        protected override List<int> GetParameters(Opcode opcode, int instructionPointer)
+        protected override List<long> GetParameters(Opcode opcode, int instructionPointer)
         {
             var opcodeInstruction = _memory[instructionPointer];
-            var parameters = new List<int>();
+            var parameters = new List<long>();
 
             switch (opcode)
             {

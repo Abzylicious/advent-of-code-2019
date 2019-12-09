@@ -10,6 +10,7 @@
         JUMP_IF_FALSE = 6,
         LESS_THAN = 7,
         EQUALS = 8,
+        MODIFY_OFFSET = 9,
         END = 99
     }
 }

@@ -5,13 +5,13 @@ namespace AdventOfCode.Computer
 {
     public class IntcodeParser
     {
-        protected int[] _memory;
+        protected List<long> _memory;
 
         public int[] Parse(List<int> intcode)
         {
-            _memory = intcode.ToArray();
+            _memory = intcode.ConvertAll(n => (long)n);
             Run();
-            return _memory;
+            return _memory.ConvertAll(n => (int)n).ToArray();
         }
 
         protected virtual void Run()
@@ -30,30 +30,30 @@ namespace AdventOfCode.Computer
             switch (instruction.Opcode)
             {
                 case Opcode.ADD:
-                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] + instruction.Parameters[1];
+                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] + instruction.Parameters[1]);
                     return nextInstructionPointer;
                 case Opcode.MULTIPLY:
-                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] * instruction.Parameters[1];
+                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] * instruction.Parameters[1]);
                     return nextInstructionPointer;
                 case Opcode.JUMP_IF_TRUE:
-                    return instruction.Parameters[0] != 0 ? instruction.Parameters[1] : nextInstructionPointer;
+                    return instruction.Parameters[0] != 0 ? (int)instruction.Parameters[1] : nextInstructionPointer;
                 case Opcode.JUMP_IF_FALSE:
-                    return instruction.Parameters[0] == 0 ? instruction.Parameters[1] : nextInstructionPointer;
+                    return instruction.Parameters[0] == 0 ? (int)instruction.Parameters[1] : nextInstructionPointer;
                 case Opcode.LESS_THAN:
-                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] < instruction.Parameters[1] ? 1 : 0;
+                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] < instruction.Parameters[1] ? 1 : 0);
                     return nextInstructionPointer;
                 case Opcode.EQUALS:
-                    _memory[instruction.Parameters[2]] = instruction.Parameters[0] == instruction.Parameters[1] ? 1 : 0;
+                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] == instruction.Parameters[1] ? 1 : 0);
                     return nextInstructionPointer;
                 default:
                     throw new Exception($"Opcode {instruction.Opcode} failed to execute.");
             }
         }
 
-        protected virtual List<int> GetParameters(Opcode opcode, int instructionPointer)
+        protected virtual List<long> GetParameters(Opcode opcode, int instructionPointer)
         {
             var opcodeInstruction = _memory[instructionPointer];
-            var parameters = new List<int>();
+            var parameters = new List<long>();
 
             switch (opcode)
             {
@@ -77,16 +77,16 @@ namespace AdventOfCode.Computer
             return parameters;
         }
 
-        protected int GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
+        protected long GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
 
-        protected int GetValue(int index, ParameterMode mode) => mode switch
+        protected virtual long GetValue(int index, ParameterMode mode) => mode switch
         {
-            ParameterMode.POSITIONAL => _memory[_memory[index]],
+            ParameterMode.POSITIONAL => _memory[(int)_memory[index]],
             ParameterMode.IMMEDIATE => _memory[index],
             _ => throw new Exception("Unknown parameter mode detected.")
         };
 
-        protected ParameterMode GetMode(int opcode, int parameterNumber)
+        protected ParameterMode GetMode(long opcode, int parameterNumber)
         {
             try
             {
@@ -97,6 +97,19 @@ namespace AdventOfCode.Computer
             {
                 throw new Exception("Number of parameters exceeded.");
             }
+        }
+
+        protected virtual void SetMemoryAt(int index, long value)
+        {
+            if (_memory.Count - 1 < index)
+            {
+                var newElements = index - _memory.Count + 1;
+                for (int i = 0; i < newElements; i++)
+                {
+                    _memory.Add(0);
+                }
+            }
+            _memory[index] = value;
         }
 
         protected Instruction GetInstruction(int instructionPointer)
