@@ -68,7 +68,9 @@ namespace AdventOfCode.Computer
                 case Opcode.EQUALS:
                     parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
                     parameters.Add(GetValue(instructionPointer + 2, GetMode(opcodeInstruction, 2)));
-                    parameters.Add(GetValue(instructionPointer + 3, ParameterMode.IMMEDIATE));
+                    var mode = GetMode(opcodeInstruction, 3);
+                    parameters.Add(GetValue(instructionPointer + 3,
+                        mode == ParameterMode.RELATIVE ? ParameterMode.RELATIVE : ParameterMode.IMMEDIATE));
                     break;
                 default:
                     throw new Exception("Opcode instruction not found.");

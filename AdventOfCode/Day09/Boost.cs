@@ -19,6 +19,7 @@ namespace AdventOfCode.Day09
         public List<long> Parse(List<long> intcode)
         {
             _output.Clear();
+            _relativeBase = 0;
             _memory = intcode;
             Run();
             return _output;
@@ -51,7 +52,9 @@ namespace AdventOfCode.Day09
             switch (opcode)
             {
                 case Opcode.WRITE:
-                    parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
+                    var mode = GetMode(opcodeInstruction, 1);
+                    parameters.Add(GetValue(instructionPointer + 1,
+                        mode == ParameterMode.RELATIVE ? ParameterMode.RELATIVE : ParameterMode.IMMEDIATE));
                     break;
                 case Opcode.OUTPUT:
                 case Opcode.MODIFY_OFFSET:
@@ -67,8 +70,8 @@ namespace AdventOfCode.Day09
         protected override long GetValue(int index, ParameterMode mode) => mode switch
         {
             ParameterMode.POSITIONAL => (int)_memory[index] > _memory.Count - 1 ? 0 : _memory[(int)_memory[index]],
-            ParameterMode.IMMEDIATE => index > _memory.Count - 1 ? 0 : _memory[index],
-            ParameterMode.RELATIVE => ((int)_memory[index] + _relativeBase) > _memory.Count - 1 ? 0 : _memory[(int)_memory[index] + _relativeBase],
+            ParameterMode.IMMEDIATE => _memory[index],
+            ParameterMode.RELATIVE => _memory[(int)_memory[index] + _relativeBase],
             _ => throw new Exception("Unknown parameter mode detected.")
         };
     }

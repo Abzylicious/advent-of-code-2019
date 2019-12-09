@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace AdventOfCode.Test
+namespace AdventOfCode.Test.Day09
 {
     [TestFixture]
     public class PartOneTests
@@ -43,6 +43,28 @@ namespace AdventOfCode.Test
             var actual = _boost.Parse(intcode);
             actual.Should().HaveCount(1);
             actual[0].Should().Be(1125899906842624);
+        }
+
+        /// <summary>
+        /// Additional test case from TPH
+        /// </summary>
+        [Test]
+        public void Additional()
+        {
+            var intcode = new List<long> { 109, 1, 204, 0, 99 };
+            var actual = _boost.Parse(intcode);
+            actual[0].Should().Be(1);
+        }
+
+        /// <summary>
+        /// Additional test case from TPH
+        /// </summary>
+        [Test]
+        public void AdditionalTwo()
+        {
+            var intcode = new List<long> { 109, 1, 203, 0, 4, 1, 99 };
+            var actual = _boost.Parse(intcode, 42);
+            actual[0].Should().Be(42);
         }
     }
 }
