@@ -30,8 +30,8 @@ namespace AdventOfCode.Day09
             ReadInput(filePath);
         }
 
-        public string GetFirstSolution() => PartOne();
-        public string GetSecondSolution() => "No solution yet :c";
+        public string GetFirstSolution() => GetSolution();
+        public string GetSecondSolution() => GetSolution();
 
         private void ReadInput(string inputPath)
         {
@@ -58,7 +58,7 @@ namespace AdventOfCode.Day09
             return result;
         }
 
-        private string PartOne()
+        private string GetSolution()
         {
             Console.Write("Enter your input value: ");
             var input = ReadInteger();
