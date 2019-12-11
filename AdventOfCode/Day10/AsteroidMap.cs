@@ -16,10 +16,10 @@ namespace AdventOfCode.Day10
 
         public AsteroidMap(string[] asteroidMapData) : this()
         {
-            CreateNew(asteroidMapData);
+            CreateMap(asteroidMapData);
         }
 
-        public void CreateNew(string[] asteroidMapData)
+        public void CreateMap(string[] asteroidMapData)
         {
             _asteroidMap.Clear();
             var xAxisLength = asteroidMapData[0].Length;

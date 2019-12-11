@@ -28,7 +28,7 @@ namespace AdventOfCode.Test.Day10
                 "...##"
             };
 
-            _asteroidMap.CreateNew(asteroids);
+            _asteroidMap.CreateMap(asteroids);
             var actual = _asteroidMap.GetBestScanStationPosition();
             actual.position.Should().Be(new Point(3, 4));
             actual.detectedAsteroids.Should().Be(8);
@@ -54,7 +54,7 @@ namespace AdventOfCode.Test.Day10
                 ".#....####"
             };
 
-            _asteroidMap.CreateNew(asteroids);
+            _asteroidMap.CreateMap(asteroids);
             var actual = _asteroidMap.GetBestScanStationPosition();
             actual.position.Should().Be(new Point(5, 8));
             actual.detectedAsteroids.Should().Be(33);
@@ -80,7 +80,7 @@ namespace AdventOfCode.Test.Day10
                 ".####.###."
             };
 
-            _asteroidMap.CreateNew(asteroids);
+            _asteroidMap.CreateMap(asteroids);
             var actual = _asteroidMap.GetBestScanStationPosition();
             actual.position.Should().Be(new Point(1, 2));
             actual.detectedAsteroids.Should().Be(35);
@@ -106,7 +106,7 @@ namespace AdventOfCode.Test.Day10
                 ".....#.#.."
             };
 
-            _asteroidMap.CreateNew(asteroids);
+            _asteroidMap.CreateMap(asteroids);
             var actual = _asteroidMap.GetBestScanStationPosition();
             actual.position.Should().Be(new Point(6, 3));
             actual.detectedAsteroids.Should().Be(41);
@@ -142,7 +142,7 @@ namespace AdventOfCode.Test.Day10
                 "###.##.####.##.#..##"
             };
 
-            _asteroidMap.CreateNew(asteroids);
+            _asteroidMap.CreateMap(asteroids);
             var actual = _asteroidMap.GetBestScanStationPosition();
             actual.position.Should().Be(new Point(11, 13));
             actual.detectedAsteroids.Should().Be(210);
