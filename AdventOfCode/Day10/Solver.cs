@@ -8,14 +8,14 @@ namespace AdventOfCode.Day10
 {
     public class Solver : ISolver
     {
-        private readonly AsteroidMap _asteroidMap;
+        private readonly ScanStation _asteroidMap;
 
         public int Day { get; } = 10;
         public string Title { get; } = "--- Day 10: Monitoring Station ---";
 
         public Solver()
         {
-            _asteroidMap = new AsteroidMap();
+            _asteroidMap = new ScanStation();
         }
 
         public void Precondition()

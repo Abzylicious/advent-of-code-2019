@@ -8,7 +8,7 @@ namespace AdventOfCode.Test.Day10
     [TestFixture]
     public class PartOneTests
     {
-        private readonly AsteroidMap _asteroidMap = new AsteroidMap();
+        private readonly ScanStation _asteroidMap = new ScanStation();
 
 
         /// <summary>

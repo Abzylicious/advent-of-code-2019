@@ -5,16 +5,16 @@ using System.Linq;
 
 namespace AdventOfCode.Day10
 {
-    public class AsteroidMap
+    public class ScanStation
     {
         private readonly IDictionary<Point, char> _asteroidMap;
 
-        public AsteroidMap()
+        public ScanStation()
         {
             _asteroidMap = new Dictionary<Point, char>();
         }
 
-        public AsteroidMap(string[] asteroidMapData) : this()
+        public ScanStation(string[] asteroidMapData) : this()
         {
             CreateMap(asteroidMapData);
         }
@@ -64,7 +64,7 @@ namespace AdventOfCode.Day10
                 }
             }
 
-            return angles.GroupBy(d => d).Count();
+            return angles.GroupBy(a => a).Count();
         }
 
         private double CalculateAngle(Point a, Point b)
