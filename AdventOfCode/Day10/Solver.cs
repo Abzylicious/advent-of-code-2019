@@ -1,8 +1,7 @@
 ﻿using AdventOfCode.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace AdventOfCode.Day10
 {
@@ -30,7 +29,7 @@ namespace AdventOfCode.Day10
         }
 
         public string GetFirstSolution() => PartOne();
-        public string GetSecondSolution() => "No solution for part 2 yet :c";
+        public string GetSecondSolution() => PartTwo();
 
         private void ReadInput(string inputPath)
         {
@@ -46,8 +45,15 @@ namespace AdventOfCode.Day10
 
         private string PartOne()
         {
-            var solution = _asteroidMap.GetBestScanStationPosition();
-            return $"Best scan station position at X: {solution.position.X} / Y: {solution.position.Y} with {solution.detectedAsteroids} asteroids detected.";
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            return $"Best scan station position at X: {position.X} / Y: {position.Y} with {detectedAsteroids} asteroids detected.";
+        }
+
+        private string PartTwo()
+        {
+            var (position, _) = _asteroidMap.GetBestScanStationPosition();
+            var solution = _asteroidMap.GetAsteroidDestructionOrder(position).ElementAt(199);
+            return $"200th asteroid to be vaporized is at X: {solution.X} / Y: {solution.Y}. Answer: {(solution.X * 100) + solution.Y}";
         }
     }
 }

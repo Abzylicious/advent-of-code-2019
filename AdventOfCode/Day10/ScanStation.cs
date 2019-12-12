@@ -87,7 +87,7 @@ namespace AdventOfCode.Day10
             return angles;
         }
 
-        public IEnumerable<(Point position, double angle, double distance)> GetAllDetectedAsteroidAnglesWithDistance(Point currentPosition)
+        private IEnumerable<(Point position, double angle, double distance)> GetAllDetectedAsteroidAnglesWithDistance(Point currentPosition)
         {
             var result = new List<(Point position, double angle, double distance)>();
             foreach (var position in _asteroidMap)
