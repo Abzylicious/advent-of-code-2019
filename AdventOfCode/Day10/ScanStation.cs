@@ -36,6 +36,24 @@ namespace AdventOfCode.Day10
             }
         }
 
+        public IEnumerable<Point> GetAsteroidDestructionOrder(Point currentPosition)
+        {
+            var result = new List<Point>();
+            var asteroidData = GetAllDetectedAsteroidAnglesWithDistance(currentPosition).ToList();
+            while (asteroidData.Count != 0)
+            {
+                var destroyedAsteroidsPerRotation = asteroidData
+                    .OrderBy(x => (x.angle, x.distance))
+                    .GroupBy(x => x.angle)
+                    .Select(x => x.First());
+
+                result.AddRange(destroyedAsteroidsPerRotation.Select(x => x.position));
+                asteroidData.RemoveAll(x => result.Contains(x.position));
+            }
+
+            return result;
+        }
+
         public (Point position, int detectedAsteroids) GetBestScanStationPosition()
         {
             var result = GetAsteroidDetectedMap().OrderByDescending(x => x.Value).FirstOrDefault();
@@ -53,7 +71,9 @@ namespace AdventOfCode.Day10
             return result;
         }
 
-        private int GetAsteroidsDetected(Point currentPosition)
+        private int GetAsteroidsDetected(Point currentPosition) => GetAllAsteroidAngles(currentPosition).GroupBy(a => a).Count();
+
+        private IEnumerable<double> GetAllAsteroidAngles(Point currentPosition)
         {
             var angles = new List<double>();
             foreach (var position in _asteroidMap)
@@ -64,7 +84,20 @@ namespace AdventOfCode.Day10
                 }
             }
 
-            return angles.GroupBy(a => a).Count();
+            return angles;
+        }
+
+        public IEnumerable<(Point position, double angle, double distance)> GetAllDetectedAsteroidAnglesWithDistance(Point currentPosition)
+        {
+            var result = new List<(Point position, double angle, double distance)>();
+            foreach (var position in _asteroidMap)
+            {
+                if (position.Key != currentPosition && position.Value == '#')
+                {
+                    result.Add((position.Key, CalculateOrientatedAngle(currentPosition, position.Key), CalculateDistance(currentPosition, position.Key)));
+                }
+            }
+            return result;
         }
 
         private double CalculateAngle(Point a, Point b)
@@ -73,5 +106,13 @@ namespace AdventOfCode.Day10
             var deltaY = b.Y - a.Y;
             return Math.Atan2(deltaY, deltaX) * 180 / Math.PI;
         }
+
+        private double CalculateOrientatedAngle(Point a, Point b)
+        {
+            var orientatedAngle = CalculateAngle(a, b) + 90;
+            return orientatedAngle < 0 ? orientatedAngle + 360 : orientatedAngle;
+        }
+
+        private double CalculateDistance(Point a, Point b) => Math.Sqrt(Math.Pow(b.X - a.X, 2) + Math.Pow(b.Y - a.Y, 2));
     }
 }
