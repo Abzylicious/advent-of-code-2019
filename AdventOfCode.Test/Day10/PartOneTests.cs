@@ -10,7 +10,6 @@ namespace AdventOfCode.Test.Day10
     {
         private readonly ScanStation _asteroidMap = new ScanStation();
 
-
         /// <summary>
         /// The best location for a new monitoring station on this map is the
         /// highlighted asteroid at 3,4 because it can detect 8 asteroids, more than
@@ -29,9 +28,9 @@ namespace AdventOfCode.Test.Day10
             };
 
             _asteroidMap.CreateMap(asteroids);
-            var actual = _asteroidMap.GetBestScanStationPosition();
-            actual.position.Should().Be(new Point(3, 4));
-            actual.detectedAsteroids.Should().Be(8);
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            position.Should().Be(new Point(3, 4));
+            detectedAsteroids.Should().Be(8);
         }
 
         /// <summary>
@@ -55,9 +54,9 @@ namespace AdventOfCode.Test.Day10
             };
 
             _asteroidMap.CreateMap(asteroids);
-            var actual = _asteroidMap.GetBestScanStationPosition();
-            actual.position.Should().Be(new Point(5, 8));
-            actual.detectedAsteroids.Should().Be(33);
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            position.Should().Be(new Point(5, 8));
+            detectedAsteroids.Should().Be(33);
         }
 
         /// <summary>
@@ -81,9 +80,9 @@ namespace AdventOfCode.Test.Day10
             };
 
             _asteroidMap.CreateMap(asteroids);
-            var actual = _asteroidMap.GetBestScanStationPosition();
-            actual.position.Should().Be(new Point(1, 2));
-            actual.detectedAsteroids.Should().Be(35);
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            position.Should().Be(new Point(1, 2));
+            detectedAsteroids.Should().Be(35);
         }
 
         /// <summary>
@@ -107,9 +106,9 @@ namespace AdventOfCode.Test.Day10
             };
 
             _asteroidMap.CreateMap(asteroids);
-            var actual = _asteroidMap.GetBestScanStationPosition();
-            actual.position.Should().Be(new Point(6, 3));
-            actual.detectedAsteroids.Should().Be(41);
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            position.Should().Be(new Point(6, 3));
+            detectedAsteroids.Should().Be(41);
         }
 
         /// <summary>
@@ -143,9 +142,9 @@ namespace AdventOfCode.Test.Day10
             };
 
             _asteroidMap.CreateMap(asteroids);
-            var actual = _asteroidMap.GetBestScanStationPosition();
-            actual.position.Should().Be(new Point(11, 13));
-            actual.detectedAsteroids.Should().Be(210);
+            var (position, detectedAsteroids) = _asteroidMap.GetBestScanStationPosition();
+            position.Should().Be(new Point(11, 13));
+            detectedAsteroids.Should().Be(210);
         }
     }
 }
