@@ -2,8 +2,8 @@
 {
     public enum ParameterMode
     {
-        POSITIONAL = 0,
-        IMMEDIATE = 1,
-        RELATIVE = 2
+        Positional = 0,
+        Immediate = 1,
+        Relative = 2
     }
 }

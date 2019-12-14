@@ -2,15 +2,15 @@
 {
     public enum Opcode
     {
-        ADD = 1,
-        MULTIPLY = 2,
-        WRITE = 3,
-        OUTPUT = 4,
-        JUMP_IF_TRUE = 5,
-        JUMP_IF_FALSE = 6,
-        LESS_THAN = 7,
-        EQUALS = 8,
-        MODIFY_OFFSET = 9,
-        END = 99
+        Add = 1,
+        Multiply = 2,
+        Write = 3,
+        Output = 4,
+        JumpIfTrue = 5,
+        JumpIfFalse = 6,
+        LessThan = 7,
+        Equals = 8,
+        ModifyOffset = 9,
+        End = 99
     }
 }

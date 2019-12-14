@@ -1,127 +1,135 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Computer
 {
-    public class IntcodeParser
+    public abstract class IntcodeParser
     {
-        protected List<long> _memory;
+        protected List<long> _memory = new List<long>();
+        protected Queue<long> _inputs = new Queue<long>();
+        protected readonly List<long> _output = new List<long>();
+        protected int _relativeBase;
+        protected int _instructionPointer;
+        private readonly int[] _modeMask = new int[] { 0, 100, 1000, 10000 };
 
-        public int[] Parse(List<int> intcode)
+        protected void SetMemory(List<long> program) => _memory = program;
+        protected void SetMemory(List<int> program) => _memory = program.ConvertAll(Convert.ToInt64);
+
+        protected List<long> Parse()
         {
-            _memory = intcode.ConvertAll(n => (long)n);
+            _output.Clear();
+            _relativeBase = 0;
+            _instructionPointer = 0;
             Run();
-            return _memory.ConvertAll(n => (int)n).ToArray();
+            return _output;
         }
 
         protected virtual void Run()
         {
-            var instructionPointer = 0;
-            while ((Opcode)_memory[instructionPointer] != Opcode.END)
+            while (GetOpcode() != Opcode.End)
             {
-                var instruction = GetInstruction(instructionPointer);
-                instructionPointer = ExecuteInstruction(instruction, instructionPointer);
+                ExecuteInstruction(GetOpcode());
             }
         }
 
-        protected virtual int ExecuteInstruction(Instruction instruction, int instructionPointer)
+        protected void ExecuteInstruction(Opcode opcode)
         {
-            var nextInstructionPointer = instructionPointer + instruction.ParameterCount();
-            switch (instruction.Opcode)
-            {
-                case Opcode.ADD:
-                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] + instruction.Parameters[1]);
-                    return nextInstructionPointer;
-                case Opcode.MULTIPLY:
-                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] * instruction.Parameters[1]);
-                    return nextInstructionPointer;
-                case Opcode.JUMP_IF_TRUE:
-                    return instruction.Parameters[0] != 0 ? (int)instruction.Parameters[1] : nextInstructionPointer;
-                case Opcode.JUMP_IF_FALSE:
-                    return instruction.Parameters[0] == 0 ? (int)instruction.Parameters[1] : nextInstructionPointer;
-                case Opcode.LESS_THAN:
-                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] < instruction.Parameters[1] ? 1 : 0);
-                    return nextInstructionPointer;
-                case Opcode.EQUALS:
-                    SetMemoryAt((int)instruction.Parameters[2], instruction.Parameters[0] == instruction.Parameters[1] ? 1 : 0);
-                    return nextInstructionPointer;
-                default:
-                    throw new Exception($"Opcode {instruction.Opcode} failed to execute.");
-            }
-        }
-
-        protected virtual List<long> GetParameters(Opcode opcode, int instructionPointer)
-        {
-            var opcodeInstruction = _memory[instructionPointer];
-            var parameters = new List<long>();
-
             switch (opcode)
             {
-                case Opcode.JUMP_IF_TRUE:
-                case Opcode.JUMP_IF_FALSE:
-                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
-                    parameters.Add(GetValue(instructionPointer + 2, GetMode(opcodeInstruction, 2)));
+                case Opcode.Add:
+                    _memory[(int)GetAddress(3)] = GetParameter(1) + GetParameter(2);
+                    _instructionPointer += 4;
                     break;
-                case Opcode.ADD:
-                case Opcode.MULTIPLY:
-                case Opcode.LESS_THAN:
-                case Opcode.EQUALS:
-                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
-                    parameters.Add(GetValue(instructionPointer + 2, GetMode(opcodeInstruction, 2)));
-                    var mode = GetMode(opcodeInstruction, 3);
-                    parameters.Add(GetValue(instructionPointer + 3,
-                        mode == ParameterMode.RELATIVE ? ParameterMode.RELATIVE : ParameterMode.IMMEDIATE));
+                case Opcode.Multiply:
+                    _memory[(int)GetAddress(3)] = GetParameter(1) * GetParameter(2);
+                    _instructionPointer += 4;
+                    break;
+                case Opcode.Write:
+                    OnWrite();
+                    _instructionPointer += 2;
+                    break;
+                case Opcode.Output:
+                    OnOutput();
+                    _instructionPointer += 2;
+                    break;
+                case Opcode.JumpIfTrue:
+                    _instructionPointer = GetParameter(1) != 0 ? (int)GetParameter(2) : _instructionPointer + 3;
+                    break;
+                case Opcode.JumpIfFalse:
+                    _instructionPointer = GetParameter(1) == 0 ? (int)GetParameter(2) : _instructionPointer + 3;
+                    break;
+                case Opcode.LessThan:
+                    _memory[(int)GetAddress(3)] = GetParameter(1) < GetParameter(2) ? 1 : 0;
+                    _instructionPointer += 4;
+                    break;
+                case Opcode.Equals:
+                    _memory[(int)GetAddress(3)] = GetParameter(1) == GetParameter(2) ? 1 : 0;
+                    _instructionPointer += 4;
+                    break;
+                case Opcode.ModifyOffset:
+                    _relativeBase += (int)GetParameter(1);
+                    _instructionPointer += 2;
                     break;
                 default:
-                    throw new Exception("Opcode instruction not found.");
-            }
-
-            return parameters;
-        }
-
-        protected long GetOpcodeValue(int instructionPointer) => _memory[instructionPointer] % 100;
-
-        protected virtual long GetValue(int index, ParameterMode mode) => mode switch
-        {
-            ParameterMode.POSITIONAL => _memory[(int)_memory[index]],
-            ParameterMode.IMMEDIATE => _memory[index],
-            _ => throw new Exception("Unknown parameter mode detected.")
-        };
-
-        protected ParameterMode GetMode(long opcode, int parameterNumber)
-        {
-            try
-            {
-                var fullCode = string.Format("{0:00000}", opcode);
-                return (ParameterMode)Enum.Parse(typeof(ParameterMode), fullCode[3 - parameterNumber].ToString());
-            }
-            catch
-            {
-                throw new Exception("Number of parameters exceeded.");
+                    throw new Exception($"Opcode {opcode} failed to execute.");
             }
         }
 
-        protected virtual void SetMemoryAt(int index, long value)
-        {
-            if (_memory.Count - 1 < index)
-            {
-                var newElements = index - _memory.Count + 1;
-                for (int i = 0; i < newElements; i++)
-                {
-                    _memory.Add(0);
-                }
-            }
-            _memory[index] = value;
-        }
+        protected abstract void OnWrite();
+        protected abstract void OnOutput();
 
-        protected Instruction GetInstruction(int instructionPointer)
+        protected long GetParameter(int relativeMemoryIndex) => _memory[(int)GetAddress(relativeMemoryIndex)];
+
+        protected long GetAddress(int relativeMemoryIndex)
         {
-            var opcode = (Opcode)GetOpcodeValue(instructionPointer);
-            return new Instruction()
+            var parameterMode = GetParameterMode(relativeMemoryIndex);
+            ExtendMemoryIfNeeded(parameterMode, relativeMemoryIndex);
+
+            return parameterMode switch
             {
-                Opcode = opcode,
-                Parameters = GetParameters(opcode, instructionPointer)
+                ParameterMode.Positional => _memory[_instructionPointer + relativeMemoryIndex],
+                ParameterMode.Immediate => _instructionPointer + relativeMemoryIndex,
+                ParameterMode.Relative => _relativeBase + _memory[_instructionPointer + relativeMemoryIndex],
+                _ => throw new Exception("Unknown parameter mode detected.")
             };
+        }
+
+        protected Opcode GetOpcode() => (Opcode)(_memory[_instructionPointer] % 100);
+        protected ParameterMode GetParameterMode(int relativeMemoryIndex) => (ParameterMode)(_memory[_instructionPointer] / _modeMask[relativeMemoryIndex] % 10);
+
+        protected void ExtendMemoryIfNeeded(ParameterMode parameterMode, int relativeMemoryIndex)
+        {
+            switch (parameterMode)
+            {
+                case ParameterMode.Positional:
+                    ExtendMemoryIfNeeded((int)_memory[_instructionPointer + relativeMemoryIndex]);
+                    break;
+                case ParameterMode.Immediate:
+                    ExtendMemoryIfNeeded(_instructionPointer + relativeMemoryIndex);
+                    break;
+                case ParameterMode.Relative:
+                    ExtendMemoryIfNeeded(_relativeBase + (int)_memory[_instructionPointer + relativeMemoryIndex]);
+                    break;
+                default:
+                    throw new Exception("Unknown parameter mode detected.");
+            }
+        }
+
+        protected void ExtendMemoryIfNeeded(int accessedIndex)
+        {
+            if (accessedIndex >= _memory.Count)
+            {
+                ExtendMemory(accessedIndex - _memory.Count + 1);
+            }
+        }
+
+        private void ExtendMemory(int additionalElements)
+        {
+            foreach (var _ in Enumerable.Range(0, additionalElements))
+            {
+                _memory.Add(0);
+            }
         }
     }
 }
