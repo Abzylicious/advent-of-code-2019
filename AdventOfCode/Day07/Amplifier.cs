@@ -1,14 +1,12 @@
 ﻿using AdventOfCode.Computer;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Day07
 {
     public class Amplifier : IntcodeParser
     {
-        private List<int> _inputs = new List<int>();
-        private int _output;
-        private int _phase;
-        private int _instructionPointer;
+        private readonly int _phase;
         public bool IsRunning { get; private set; }
         public bool IsPaused { get; private set; }
 
@@ -19,11 +17,8 @@ namespace AdventOfCode.Day07
 
         public int GetThrusterSignal(List<int> intcode, int signal)
         {
-            _memory = intcode.ConvertAll(n => (long)n);
-            _inputs = new List<int>() { _phase, signal };
-            _instructionPointer = 0;
-            Run();
-            return _output;
+            Start(intcode, signal);
+            return (int)_output.Last();
         }
 
         public int GetThrusterSignalKeepState(List<int> initialIntcode, int signal)
@@ -31,66 +26,48 @@ namespace AdventOfCode.Day07
             IsPaused = false;
             if (!IsRunning)
             {
-                _memory = initialIntcode.ConvertAll(n => (long)n);
-                _inputs = new List<int>() { _phase, signal };
-                _instructionPointer = 0;
                 IsRunning = true;
-                Run();
-                return _output;
+                Start(initialIntcode, signal);
             }
+
             if (!IsPaused)
             {
-                _inputs.Add(signal);
-                Run();
+                Continue(signal);
             }
-            return _output;
+
+            return (int)_output.Last();
+        }
+
+        private void Start(List<int> intcode, int signal)
+        {
+            _instructionPointer = 0;
+            SetMemory(intcode);
+            _inputs.Enqueue(_phase);
+            _inputs.Enqueue(signal);
+            Run();
+        }
+
+        private void Continue(int signal)
+        {
+            _inputs.Enqueue(signal);
+            Run();
         }
 
         protected override void Run()
         {
-            while ((Opcode)_memory[_instructionPointer] != Opcode.END && !IsPaused)
+            while (GetOpcode() != Opcode.End && !IsPaused)
             {
-                var instruction = GetInstruction(_instructionPointer);
-                _instructionPointer = ExecuteInstruction(instruction, _instructionPointer);
+                ExecuteInstruction(GetOpcode());
             }
-            IsRunning = (Opcode)_memory[_instructionPointer] != Opcode.END;
+            IsRunning = GetOpcode() != Opcode.End;
         }
 
-        protected override int ExecuteInstruction(Instruction instruction, int instructionPointer)
+        protected override void OnWrite() => _memory[(int)GetAddress(1)] = _inputs.Dequeue();
+
+        protected override void OnOutput()
         {
-            var nextInstructionPointer = instructionPointer + instruction.ParameterCount();
-            switch (instruction.Opcode)
-            {
-                case Opcode.WRITE:
-                    _memory[(int)instruction.Parameters[0]] = _inputs[0];
-                    _inputs.RemoveAt(0);
-                    return nextInstructionPointer;
-                case Opcode.OUTPUT:
-                    _output = (int)instruction.Parameters[0];
-                    IsPaused = true;
-                    return nextInstructionPointer;
-            }
-            return base.ExecuteInstruction(instruction, instructionPointer);
-        }
-
-        protected override List<long> GetParameters(Opcode opcode, int instructionPointer)
-        {
-            var opcodeInstruction = _memory[instructionPointer];
-            var parameters = new List<long>();
-
-            switch (opcode)
-            {
-                case Opcode.WRITE:
-                    parameters.Add(GetValue(instructionPointer + 1, ParameterMode.IMMEDIATE));
-                    break;
-                case Opcode.OUTPUT:
-                    parameters.Add(GetValue(instructionPointer + 1, GetMode(opcodeInstruction, 1)));
-                    break;
-                default:
-                    return base.GetParameters(opcode, instructionPointer);
-            }
-
-            return parameters;
+            _output.Add(GetParameter(1));
+            IsPaused = true;
         }
     }
 }
