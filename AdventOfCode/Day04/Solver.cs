@@ -1,26 +1,21 @@
 ﻿using AdventOfCode.Interfaces;
-using System;
+using AdventOfCode.Services;
 
 namespace AdventOfCode.Day04
 {
     public class Solver : ISolver
     {
-        private readonly PasswordCombiner _passwordCombiner;
-        private int _start = 0;
-        private int _end = 0;
+        private readonly PasswordCombiner _passwordCombiner = new PasswordCombiner();
+        private int _start;
+        private int _end;
 
         public int Day { get; } = 4;
         public string Title { get; } = "--- Day 4: Secure Container ---";
 
-        public Solver()
-        {
-            _passwordCombiner = new PasswordCombiner();
-        }
-
         public void Precondition()
         {
-            _start = ReadInteger("start");
-            _end = ReadInteger("end");
+            _start = ConsoleReader.ReadIntegerFor("start");
+            _end = ConsoleReader.ReadIntegerFor("end");
         }
 
         public string GetFirstSolution() => _passwordCombiner.GetValidCombinations(_start, _end,
@@ -28,16 +23,5 @@ namespace AdventOfCode.Day04
 
         public string GetSecondSolution() => _passwordCombiner.GetValidCombinations(_start, _end,
             new NoDecreaseRule(), new AdjacentDigitsMatchOnlyOnceRule()).ToString();
-
-        private int ReadInteger(string descriptor)
-        {
-            Console.Write($"Enter your {descriptor} value: ");
-            int result;
-            while (!int.TryParse(Console.ReadLine(), out result))
-            {
-                Console.Write("The entered value is not a number: ");
-            }
-            return result;
-        }
     }
 }

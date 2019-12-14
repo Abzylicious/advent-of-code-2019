@@ -1,7 +1,5 @@
 ﻿using AdventOfCode.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IO;
+using AdventOfCode.Services;
 
 namespace AdventOfCode.Day08
 {
@@ -15,38 +13,14 @@ namespace AdventOfCode.Day08
 
         public void Precondition()
         {
-            var filePath = GetFilePath();
-            var encryptedData = ReadInput(filePath);
-            var width = ReadInteger("width");
-            var height = ReadInteger("height");
-            _spaceImage = _imageDecoder.CreateNewSpaceImage(encryptedData, width, height);
+            var filePath = InputFileReader.GetFilePath();
+            var input = InputFileReader.ReadText(filePath);
+            var width = ConsoleReader.ReadIntegerFor("width");
+            var height = ConsoleReader.ReadIntegerFor("height");
+            _spaceImage = _imageDecoder.CreateNewSpaceImage(input, width, height);
         }
 
         public string GetFirstSolution() => _imageDecoder.GetChecksum(_spaceImage).ToString();
         public string GetSecondSolution() => $"\n{_imageDecoder.DecodeImageToString(_spaceImage)}";
-
-        private string GetFilePath()
-        {
-            var filePath = string.Empty;
-            while (!File.Exists(filePath))
-            {
-                Console.Write("Path to input.txt: ");
-                filePath = Console.ReadLine();
-            }
-            return filePath;
-        }
-
-        private string ReadInput(string inputPath) => File.ReadAllText(inputPath).TrimEnd();
-
-        private int ReadInteger(string descriptor)
-        {
-            Console.Write($"Enter your {descriptor} value: ");
-            int result;
-            while (!int.TryParse(Console.ReadLine(), out result))
-            {
-                Console.Write("The entered value is not a number: ");
-            }
-            return result;
-        }
     }
 }

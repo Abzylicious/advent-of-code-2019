@@ -1,47 +1,25 @@
 ﻿using AdventOfCode.Interfaces;
-using System;
-using System.IO;
+using AdventOfCode.Services;
 using System.Linq;
 
 namespace AdventOfCode.Day10
 {
     public class Solver : ISolver
     {
-        private readonly ScanStation _asteroidMap;
+        private readonly ScanStation _asteroidMap = new ScanStation();
 
         public int Day { get; } = 10;
         public string Title { get; } = "--- Day 10: Monitoring Station ---";
 
-        public Solver()
-        {
-            _asteroidMap = new ScanStation();
-        }
-
         public void Precondition()
         {
-            var filePath = string.Empty;
-            while (!File.Exists(filePath))
-            {
-                Console.Write("Path to input.txt: ");
-                filePath = Console.ReadLine();
-            }
-            ReadInput(filePath);
+            var filePath = InputFileReader.GetFilePath();
+            var input = InputFileReader.ReadText(filePath, "\n");
+            _asteroidMap.CreateMap(input.ToArray());
         }
 
         public string GetFirstSolution() => PartOne();
         public string GetSecondSolution() => PartTwo();
-
-        private void ReadInput(string inputPath)
-        {
-            try
-            {
-                _asteroidMap.CreateMap(File.ReadAllLines(inputPath));
-            }
-            catch (Exception)
-            {
-                throw new Exception("The input file is not formatted as expected.");
-            }
-        }
 
         private string PartOne()
         {

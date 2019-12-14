@@ -21,7 +21,7 @@ namespace AdventOfCode
         private static int ReadDay()
         {
             Console.Write("\nEnter a day to view its solution: ");
-            var daySelection = ReadInteger();
+            var daySelection = ConsoleReader.ReadInteger();
             if (!IsCalendarDay(daySelection))
             {
                 Console.WriteLine("Code of Advent takes place between the 1. and 25. of December. Please select a fitting value.");
@@ -29,16 +29,6 @@ namespace AdventOfCode
             }
 
             return daySelection;
-        }
-
-        private static int ReadInteger()
-        {
-            int result;
-            while (!int.TryParse(Console.ReadLine(), out result))
-            {
-                Console.Write("The entered value is not a number: ");
-            }
-            return result;
         }
 
         private static bool IsCalendarDay(int day) => day >= 0 && day <= 25;
