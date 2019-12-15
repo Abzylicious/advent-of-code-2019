@@ -24,6 +24,7 @@ namespace AdventOfCode.Day05
         }
 
         protected override void OnWrite() => _memory[(int)GetAddress(1)] = _inputs.Dequeue();
+
         protected override void OnOutput()
         {
             _output.Clear();
