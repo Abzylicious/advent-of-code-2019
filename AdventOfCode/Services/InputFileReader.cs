@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 namespace AdventOfCode.Services
 {
@@ -63,6 +64,29 @@ namespace AdventOfCode.Services
             try
             {
                 return File.ReadAllText(filePath).TrimEnd();
+            }
+            catch (Exception)
+            {
+                throw new Exception(ErrorMessage);
+            }
+        }
+
+        public static List<Vector3> ReadCoordinates(string filePath)
+        {
+            try
+            {
+                var result = new List<Vector3>();
+                var input = File.ReadAllText(filePath).Replace("<", "").Replace(">", "");
+                foreach (var line in input.Split("\n").Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    var coordinates = line.Split(',');
+                    result.Add(new Vector3(
+                        Convert.ToInt32(coordinates[0].Trim().Substring(2)),
+                        Convert.ToInt32(coordinates[1].Trim().Substring(2)),
+                        Convert.ToInt32(coordinates[2].Trim().Substring(2))));
+                }
+
+                return result;
             }
             catch (Exception)
             {
