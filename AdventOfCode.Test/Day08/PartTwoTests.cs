@@ -12,7 +12,7 @@ namespace AdventOfCode.Test.Day08
         [Test]
         public void ExampleOne()
         {
-            var imageData = "0222112222120000";
+            const string imageData = "0222112222120000";
             var expected = new string[,] { { "0", "1" }, { "1", "0" } };
 
             var image = _imageDecoder.CreateNewSpaceImage(imageData, 2, 2);

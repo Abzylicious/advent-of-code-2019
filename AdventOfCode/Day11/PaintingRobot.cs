@@ -8,10 +8,10 @@ namespace AdventOfCode.Day11
 {
     public class PaintingRobot : IntcodeParser
     {
-        private List<long> _program = new List<long>();
-        private Orientation _orientation = Orientation.Up;
+        private readonly List<long> _program = new List<long>();
         private readonly List<PanelHistoryEntry> _history = new List<PanelHistoryEntry>();
         private readonly ICollection<Point> _paintedPanels = new List<Point>();
+        private Orientation _orientation = Orientation.Up;
         private bool _isFirstOutput = true;
 
         public PaintingRobot(List<long> program)
@@ -40,8 +40,8 @@ namespace AdventOfCode.Day11
         public string GetPainting()
         {
             var canvas = SetupCanvas();
-            var fullBlock = '\u2588';
-            var lightShade = '\u2591';
+            const char fullBlock = '\u2588';
+            const char lightShade = '\u2591';
             var result = string.Empty;
 
             for (int y = 0; y < canvas.height; y++)
@@ -55,7 +55,7 @@ namespace AdventOfCode.Day11
             return result.Replace('1', fullBlock).Replace('0', lightShade);
         }
 
-        public (int[,] canvas, int width, int height) SetupCanvas()
+        private (int[,] canvas, int width, int height) SetupCanvas()
         {
             var minX = _paintedPanels.OrderBy(h => h.X).ToList()[0].X;
             var maxX = _paintedPanels.OrderByDescending(h => h.X).ToList()[0].X;
@@ -73,10 +73,7 @@ namespace AdventOfCode.Day11
             return (canvas, maxX + deltaX, maxY + deltaY);
         }
 
-        protected override void OnWrite()
-        {
-            _memory[(int)GetAddress(1)] = GetCurrentPanelColor();
-        }
+        protected override void OnWrite() => _memory[(int)GetAddress(1)] = GetCurrentPanelColor();
 
         protected override void OnOutput()
         {
@@ -105,26 +102,15 @@ namespace AdventOfCode.Day11
         {
             var currentEntry = GetLastEntry();
             if (!_paintedPanels.Any(p => p == currentEntry.Position))
-            {
                 _paintedPanels.Add(currentEntry.Position);
-            }
 
             _history.Find(h => h == currentEntry).Color = color;
         }
 
         private void Turn(int direction)
         {
-            if (direction == 0)
-            {
-                var nextPosition = TurnLeft();
-                _history.Add(new PanelHistoryEntry(nextPosition, GetPanelColor(nextPosition)));
-            }
-
-            if (direction == 1)
-            {
-                var nextPosition = TurnRight();
-                _history.Add(new PanelHistoryEntry(nextPosition, GetPanelColor(nextPosition)));
-            }
+            var nextPosition = direction == 0 ? TurnLeft() : TurnRight();
+            _history.Add(new PanelHistoryEntry(nextPosition, GetPanelColor(nextPosition)));
         }
 
         private Point TurnRight()

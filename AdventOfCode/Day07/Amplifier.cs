@@ -7,8 +7,8 @@ namespace AdventOfCode.Day07
     public class Amplifier : IntcodeParser
     {
         private readonly int _phase;
+        private bool _isPaused;
         public bool IsRunning { get; private set; }
-        public bool IsPaused { get; private set; }
 
         public Amplifier(int phase)
         {
@@ -23,17 +23,15 @@ namespace AdventOfCode.Day07
 
         public int GetThrusterSignalKeepState(List<int> initialIntcode, int signal)
         {
-            IsPaused = false;
+            _isPaused = false;
             if (!IsRunning)
             {
                 IsRunning = true;
                 Start(initialIntcode, signal);
             }
 
-            if (!IsPaused)
-            {
+            if (!_isPaused)
                 Continue(signal);
-            }
 
             return (int)_output.Last();
         }
@@ -55,10 +53,11 @@ namespace AdventOfCode.Day07
 
         protected override void Run()
         {
-            while (GetOpcode() != Opcode.End && !IsPaused)
+            while (GetOpcode() != Opcode.End && !_isPaused)
             {
                 ExecuteInstruction(GetOpcode());
             }
+
             IsRunning = GetOpcode() != Opcode.End;
         }
 
@@ -67,7 +66,7 @@ namespace AdventOfCode.Day07
         protected override void OnOutput()
         {
             _output.Add(GetParameter(1));
-            IsPaused = true;
+            _isPaused = true;
         }
     }
 }

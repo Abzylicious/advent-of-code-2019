@@ -10,32 +10,21 @@ namespace AdventOfCode.Day03
         public Wire WireA { get; set; }
         public Wire WireB { get; set; }
 
-        public IEnumerable<Point> GetIntersections() => WireA.ConnectedPoints.Intersect(WireB.ConnectedPoints);
-
         public int GetClosestIntersection()
         {
             var intersections = GetIntersections();
-            var distances = new List<int>();
-
-            foreach (var intersection in intersections)
-            {
-                distances.Add(CalculateManhattanDistance(intersection));
-            }
+            var distances = intersections.Select(i => CalculateManhattanDistance(i)).ToList();
             return distances.Min();
         }
 
         public int GetSmallestSteps()
         {
             var intersections = GetIntersections();
-            var steps = new List<int>();
-
-            foreach (var intersection in intersections)
-            {
-                steps.Add(CalculateSteps(intersection));
-            }
+            var steps = intersections.Select(i => CalculateSteps(i)).ToList();
             return steps.Min();
         }
 
+        private IEnumerable<Point> GetIntersections() => WireA.ConnectedPoints.Intersect(WireB.ConnectedPoints);
         private int CalculateManhattanDistance(Point point) => Math.Abs(point.X) + Math.Abs(point.Y);
 
         private int CalculateSteps(Point destination)

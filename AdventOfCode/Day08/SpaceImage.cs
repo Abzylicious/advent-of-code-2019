@@ -6,6 +6,6 @@ namespace AdventOfCode.Day08
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        public List<SpaceImageLayer> Layers { get; set; } = new List<SpaceImageLayer>();
+        public List<SpaceImageLayer> Layers { get; } = new List<SpaceImageLayer>();
     }
 }

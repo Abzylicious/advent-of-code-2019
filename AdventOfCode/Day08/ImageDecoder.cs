@@ -16,6 +16,7 @@ namespace AdventOfCode.Day08
                     rows.Rows.Add(encryptedData.Substring(0, width));
                     encryptedData = encryptedData.Remove(0, width);
                 }
+
                 spaceImage.Layers.Add(rows);
             }
 
@@ -48,13 +49,14 @@ namespace AdventOfCode.Day08
                     }
                 }
             }
+
             return decodedImage;
         }
 
         private string ConvertLayerToString(string[,] layer, int width, int height)
         {
-            var fullBlock = '\u2588';
-            var lightShade = '\u2591';
+            const char fullBlock = '\u2588';
+            const char lightShade = '\u2591';
             var result = string.Empty;
 
             for (int i = 0; i < height; i++)
@@ -63,31 +65,21 @@ namespace AdventOfCode.Day08
                 {
                     result += layer[i, j];
                 }
+
                 result += "\n";
             }
+
             return result.Replace('1', fullBlock).Replace('0', lightShade);
         }
 
         private SpaceImageLayer GetLayerWithFewestZeros(List<SpaceImageLayer> layers)
         {
-            var zerosPerLayer = new List<int>();
-            foreach (var layer in layers)
-            {
-                zerosPerLayer.Add(CountNumber(layer, 0));
-            }
-
+            var zerosPerLayer = layers.Select(l => CountNumber(l, 0)).ToList();
             var layerIndex = zerosPerLayer.IndexOf(zerosPerLayer.OrderBy(z => z).FirstOrDefault());
             return layers[layerIndex];
         }
 
-        private int CountNumber(SpaceImageLayer layer, int searchedNumber)
-        {
-            var numberCount = 0;
-            foreach (var row in layer.Rows)
-            {
-                numberCount += row.Count(d => d == $"{searchedNumber}"[0]);
-            }
-            return numberCount;
-        }
+        private int CountNumber(SpaceImageLayer layer, int searchedNumber) =>
+            layer.Rows.Sum(r => r.Count(d => d == $"{searchedNumber}"[0]));
     }
 }

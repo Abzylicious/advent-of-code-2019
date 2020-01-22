@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using AdventOfCode.Computer;
+﻿using AdventOfCode.Computer;
+using System.Collections.Generic;
 
 namespace AdventOfCode.Day05
 {
     public class TEST : IntcodeParser
     {
-        public List<int> Parse(List<int> intcode)
+        public IEnumerable<int> Parse(List<int> intcode)
         {
             _instructionPointer = 0;
             SetMemory(intcode);

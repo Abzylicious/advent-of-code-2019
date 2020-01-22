@@ -4,7 +4,7 @@ namespace AdventOfCode.Day11
 {
     public class PanelHistoryEntry
     {
-        public Point Position { get; set; }
+        public Point Position { get; }
         public int Color { get; set; }
 
         public PanelHistoryEntry(Point position, int color)

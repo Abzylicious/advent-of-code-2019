@@ -4,6 +4,6 @@ namespace AdventOfCode.Day08
 {
     public class SpaceImageLayer
     {
-        public List<string> Rows { get; set; } = new List<string>();
+        public List<string> Rows { get; } = new List<string>();
     }
 }

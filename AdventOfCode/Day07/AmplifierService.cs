@@ -27,10 +27,11 @@ namespace AdventOfCode.Day07
 
             do
             {
-                for (int i = 0; i < amplifiers.Count; i++)
+                foreach (var amplifier in amplifiers)
                 {
-                    thrusterSignal = amplifiers[i].GetThrusterSignalKeepState(intcode, thrusterSignal);
+                    thrusterSignal = amplifier.GetThrusterSignalKeepState(intcode, thrusterSignal);
                 }
+
             } while (amplifiers.Any(a => a.IsRunning));
             return thrusterSignal;
         }
@@ -50,14 +51,14 @@ namespace AdventOfCode.Day07
             return outputs.Max();
         }
 
-        private IEnumerable<IEnumerable<int>> Permute(List<int> sequence)
+        private IEnumerable<IEnumerable<int>> Permute(IList<int> sequence)
         {
             var result = new List<List<int>>();
             Permute(sequence, sequence.Count, result);
             return result;
         }
 
-        private void Permute(List<int> sequence, int sequenceCount, List<List<int>> result)
+        private void Permute(IList<int> sequence, int sequenceCount, ICollection<List<int>> result)
         {
             if (sequenceCount == 1)
             {

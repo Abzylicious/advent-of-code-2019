@@ -1,20 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace AdventOfCode.Day12
 {
     public static class MoonExtensions
     {
-        public static int TotalEnergy(this IEnumerable<Moon> it)
-        {
-            var energy = 0;
-            foreach (var moon in it)
-            {
-                energy += moon.TotalEnergy();
-            }
-
-            return energy;
-        }
+        public static int TotalEnergy(this IEnumerable<Moon> it) => it.Sum(moon => moon.TotalEnergy());
 
         public static Vector3 AppliedGravity(this Moon it, Moon other) =>
             new Vector3(AppliedXGravity(it, other), AppliedYGravity(it, other), AppliedZGravity(it, other));

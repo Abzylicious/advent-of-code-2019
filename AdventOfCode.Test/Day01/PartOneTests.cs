@@ -7,7 +7,7 @@ namespace AdventOfCode.Test.Day01
     [TestFixture]
     public class PartOneTests
     {
-        private FuelCalculator _fuelCalculator = new FuelCalculator();
+        private readonly FuelCalculator _fuelCalculator = new FuelCalculator();
 
         /// <summary>
         /// For a mass of 12, divide by 3 and round down to get 4, then subtract 2 to get 2.

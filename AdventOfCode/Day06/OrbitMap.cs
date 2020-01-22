@@ -31,7 +31,7 @@ namespace AdventOfCode.Day06
             }
         }
 
-        public Orbit GetOrbit(string orbitName) => _orbitMap
+        private Orbit GetOrbit(string orbitName) => _orbitMap
             .FirstOrDefault(o => o.Key.Equals(orbitName, StringComparison.OrdinalIgnoreCase)).Value;
 
         public int OrbitCount() => OrbitCount(GetOrbit("com"), 0);
@@ -103,7 +103,7 @@ namespace AdventOfCode.Day06
 
         private void AddChildToParent(Orbit parent, Orbit potentialChild)
         {
-            if (!parent.ChildOrbits.Any(co => co.Name == potentialChild.Name))
+            if (parent.ChildOrbits.All(co => co.Name != potentialChild.Name))
             {
                 parent.ChildOrbits.Add(potentialChild);
             }

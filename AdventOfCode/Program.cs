@@ -15,6 +15,7 @@ namespace AdventOfCode
                 var day = ReadDay();
                 solveService.GetSolution(day);
                 Console.WriteLine("\nDo you want to check upon other days? Press any key to continue, press 'ESCAPE' to exit.");
+
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
 

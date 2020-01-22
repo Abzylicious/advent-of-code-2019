@@ -5,7 +5,7 @@ namespace AdventOfCode.Day02
 {
     public class IntcodeComputer : IntcodeParser
     {
-        public int[] Parse(List<int> intcode)
+        public IEnumerable<int> Parse(List<int> intcode)
         {
             _instructionPointer = 0;
             SetMemory(intcode);
@@ -13,7 +13,7 @@ namespace AdventOfCode.Day02
             return _memory.ConvertAll(x => (int)x).ToArray();
         }
 
-        public int[] Parse(List<int> intcode, int noun, int verb)
+        public IEnumerable<int> Parse(List<int> intcode, int noun, int verb)
         {
             _instructionPointer = 0;
             SetMemory(intcode);

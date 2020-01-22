@@ -7,7 +7,7 @@ namespace AdventOfCode.Test.Day01
     [TestFixture]
     public class PartTwoTests
     {
-        private FuelCalculator _fuelCalculator = new FuelCalculator();
+        private readonly FuelCalculator _fuelCalculator = new FuelCalculator();
 
         /// <summary>
         /// A module of mass 14 requires 2 fuel. This fuel requires no further fuel (2 divided by 3 and rounded down is 0,

@@ -14,11 +14,6 @@ namespace AdventOfCode.Day10
             _asteroidMap = new Dictionary<Point, char>();
         }
 
-        public ScanStation(string[] asteroidMapData) : this()
-        {
-            CreateMap(asteroidMapData);
-        }
-
         public void CreateMap(string[] asteroidMapData)
         {
             _asteroidMap.Clear();
@@ -56,8 +51,8 @@ namespace AdventOfCode.Day10
 
         public (Point position, int detectedAsteroids) GetBestScanStationPosition()
         {
-            var result = GetAsteroidDetectedMap().OrderByDescending(x => x.Value).FirstOrDefault();
-            return (result.Key, result.Value);
+            var (position, asteroids) = GetAsteroidDetectedMap().OrderByDescending(x => x.Value).FirstOrDefault();
+            return (position, asteroids);
         }
 
         private IDictionary<Point, int> GetAsteroidDetectedMap()
@@ -97,6 +92,7 @@ namespace AdventOfCode.Day10
                     result.Add((position.Key, CalculateOrientatedAngle(currentPosition, position.Key), CalculateDistance(currentPosition, position.Key)));
                 }
             }
+
             return result;
         }
 

@@ -12,7 +12,7 @@ namespace AdventOfCode.Test.Day08
         [Test]
         public void ExampleOne()
         {
-            var imageData = "123456789012";
+            const string imageData = "123456789012";
             var image = _imageDecoder.CreateNewSpaceImage(imageData, 3, 2);
             var actual = _imageDecoder.GetChecksum(image);
             actual.Should().Be(1);

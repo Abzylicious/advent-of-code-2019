@@ -7,11 +7,11 @@ namespace AdventOfCode.Computer
     public abstract class IntcodeParser
     {
         protected List<long> _memory = new List<long>();
-        protected Queue<long> _inputs = new Queue<long>();
+        protected readonly Queue<long> _inputs = new Queue<long>();
         protected readonly List<long> _output = new List<long>();
         protected int _relativeBase;
         protected int _instructionPointer;
-        private readonly int[] _modeMask = new int[] { 0, 100, 1000, 10000 };
+        private readonly int[] _modeMask = { 0, 100, 1000, 10000 };
 
         protected void SetMemory(List<long> program) => _memory = program;
         protected void SetMemory(List<int> program) => _memory = program.ConvertAll(Convert.ToInt64);
@@ -96,9 +96,9 @@ namespace AdventOfCode.Computer
         }
 
         protected Opcode GetOpcode() => (Opcode)(_memory[_instructionPointer] % 100);
-        protected ParameterMode GetParameterMode(int relativeMemoryIndex) => (ParameterMode)(_memory[_instructionPointer] / _modeMask[relativeMemoryIndex] % 10);
 
-        protected void ExtendMemoryIfNeeded(ParameterMode parameterMode, int relativeMemoryIndex)
+        private ParameterMode GetParameterMode(int relativeMemoryIndex) => (ParameterMode)(_memory[_instructionPointer] / _modeMask[relativeMemoryIndex] % 10);
+        private void ExtendMemoryIfNeeded(ParameterMode parameterMode, int relativeMemoryIndex)
         {
             switch (parameterMode)
             {
@@ -116,7 +116,7 @@ namespace AdventOfCode.Computer
             }
         }
 
-        protected void ExtendMemoryIfNeeded(int accessedIndex)
+        private void ExtendMemoryIfNeeded(int accessedIndex)
         {
             if (accessedIndex >= _memory.Count)
             {

@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.Interfaces;
 using AdventOfCode.Services;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Day01
 {
@@ -22,25 +23,7 @@ namespace AdventOfCode.Day01
         public string GetFirstSolution() => PartOne().ToString();
         public string GetSecondSolution() => PartTwo().ToString();
 
-        private int PartOne()
-        {
-            var result = 0;
-            foreach (var mass in _masses)
-            {
-                result += _fuelCalculator.GetFuel(mass);
-            }
-
-            return result;
-        }
-
-        private int PartTwo()
-        {
-            var result = 0;
-            foreach (var mass in _masses)
-            {
-                result += _fuelCalculator.GetTotalFuel(mass);
-            }
-            return result;
-        }
+        private int PartOne() => _masses.Sum(mass => _fuelCalculator.GetFuel(mass));
+        private int PartTwo() => _masses.Sum(mass => _fuelCalculator.GetTotalFuel(mass));
     }
 }

@@ -15,7 +15,7 @@ namespace AdventOfCode.Day03
             CreateNew(wirepath);
         }
 
-        public void CreateNew(string wirepath)
+        private void CreateNew(string wirepath)
         {
             ConnectedPoints.Clear();
             var instructions = wirepath.Split(',').Select(d => d.Trim());
