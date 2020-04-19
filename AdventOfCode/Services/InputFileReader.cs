@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdventOfCode.Day14;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -77,6 +78,7 @@ namespace AdventOfCode.Services
             {
                 var result = new List<Vector3>();
                 var input = File.ReadAllText(filePath).Replace("<", "").Replace(">", "");
+
                 foreach (var line in input.Split("\n").Where(x => !string.IsNullOrEmpty(x)))
                 {
                     var coordinates = line.Split(',');
@@ -92,6 +94,48 @@ namespace AdventOfCode.Services
             {
                 throw new Exception(ErrorMessage);
             }
+        }
+
+        public static List<ChemicalReaction> ReadChemicalReactions(string filePath)
+        {
+            try
+            {
+                var result = new List<ChemicalReaction>();
+                var input = File.ReadAllLines(filePath);
+
+                foreach (var line in input)
+                {
+                    var conversationRuleParts = line.Split(" => ");
+                    var conversationResult = GetChemical(conversationRuleParts[1]);
+                    var conversationComponents = GetChemicalComponents(conversationRuleParts[0]);
+                    result.Add(new ChemicalReaction(new Chemical(conversationResult.name, conversationResult.amount), conversationComponents));
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw new Exception(ErrorMessage);
+            }
+        }
+
+        private static (int amount, string name) GetChemical(string input)
+        {
+            var values = input.Split(" ");
+            return (Convert.ToInt32(values[0]), values[1]);
+        }
+
+        private static IEnumerable<Chemical> GetChemicalComponents(string input)
+        {
+            var components = new List<Chemical>();
+
+            foreach (var component in input.Split(", "))
+            {
+                var chemical = GetChemical(component);
+                components.Add(new Chemical(chemical.name, chemical.amount));
+            }
+
+            return components;
         }
     }
 }
