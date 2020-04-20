@@ -17,8 +17,19 @@ namespace AdventOfCode.Services
             while (!File.Exists(filePath))
             {
                 Console.Write("Path to input.txt: ");
-                filePath = Console.ReadLine();
+                filePath = SanatizePath(Console.ReadLine());
             }
+            return filePath;
+        }
+
+        private static string SanatizePath(string filePath)
+        {
+            if (filePath.StartsWith("\""))
+                filePath = filePath.Substring(1);
+
+            if (filePath.EndsWith("\"")) 
+                filePath = filePath.Remove(filePath.Length - 1);
+
             return filePath;
         }
 
